@@ -18,4 +18,8 @@ class KaynakcaYonetimi : public wxFrame
 public:
 	KaynakcaYonetimi(const wxString& title);
 	
+	void OnQuit(wxCommandEvent& event);
+	
+	wxMenuBar *menubar;
+	wxMenu *file;
 };
