@@ -1,1 +1,3 @@
-Contents of readme file...
+Programı derlemek için yalnızca make komutunu kullanmanız yeterlidir.
+
+Derleme tamamlandıktan sonra ./KaynakcaYonetimi çalıştırılabilir dosyası ile programı açabilirsiniz.
