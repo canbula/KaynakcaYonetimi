@@ -9,6 +9,10 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	menubar->Append(file,wxT("&Dosya"));
 	SetMenuBar(menubar);
 	
+	statusbar = new wxStatusBar(this,wxID_ANY,wxST_SIZEGRIP);
+	this->SetStatusBar(statusbar);
+	statusbar->SetStatusText(wxT("Kaynakça Yönetimi - Pardus Yazılım Kampı 2013"));
+	
 	Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::OnQuit));
 	
 	SetIcon(wxIcon(wxT("kaynakcayonetimi.xpm")));

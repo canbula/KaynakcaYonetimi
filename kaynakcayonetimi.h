@@ -22,4 +22,5 @@ public:
 	
 	wxMenuBar *menubar;
 	wxMenu *file;
+	wxStatusBar *statusbar;
 };
