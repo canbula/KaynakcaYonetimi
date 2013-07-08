@@ -1,0 +1,21 @@
+=====================================================
+    Kaynakça Yönetimi - Pardus Yazılım Kampı 2013    
+=====================================================
+    Bora Canbula - bora.canbula@cbu.edu.tr           
+    İlkin Sencar - ilkinsencar@ogr.cbu.edu.tr        
+=====================================================
+    Temmuz Ayı 1. Gelişme Raporu                     
+=====================================================
+- Proje kapsamında yapılması planlanan işlerin proje 
+süresine göre dağıtıldığı bir çalışma takvimi 
+hazırlandı.
+- Kullanılması planlanan programlama dili ve 
+kütüphaneler lisans öğrencisinin de yeterlilikleri 
+göz önüne alınarak seçildi.
+- Gerekli derleyiciler ve kütüphanelerin (gcc-g++ ve 
+wxWidgets) kurulumu yapıldı.
+- Önhazırlık sürecinin tamamlanmasının ardından 
+programın geliştirilmesine başlandı.
+- Derlenebilir ilk versiyon ve ardından diğer 
+geliştirmeler git'e yüklendi.
+=====================================================
