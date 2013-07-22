@@ -1,3 +1,5 @@
 Programı derlemek için yalnızca make komutunu kullanmanız yeterlidir.
 
 Derleme tamamlandıktan sonra ./KaynakcaYonetimi çalıştırılabilir dosyası ile programı açabilirsiniz.
+
+Ayrıca diğer platformlar için hazırlanan bazı Makefile dosyaları da build klasörüne eklenmiştir.
