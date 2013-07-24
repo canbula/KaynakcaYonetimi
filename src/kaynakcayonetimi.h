@@ -5,12 +5,20 @@ class KaynakcaYonetimi : public wxFrame
 public:
 	KaynakcaYonetimi(const wxString& title);
 	
+	void EkleKitapDialog(wxCommandEvent& event);
 	void OnQuit(wxCommandEvent& event);
 	
 	wxMenuBar *menubar;
 	wxMenu *file;
+	wxMenu *add;
 	wxStatusBar *statusbar;
 };
+
+const int ID_ADDMENU_BOOK = 502;
+const int ID_ADDMENU_ARTICLE = 503;
+const int ID_ADDMENU_DOCUMENT = 504;
+const int ID_ADDMENU_FILE = 505;
+const int ID_ADDMENU_LIST = 506;
 
 const int ID_TOOLBAR_LIBRARY = 701;
 const int ID_TOOLBAR_BOOK = 702;
