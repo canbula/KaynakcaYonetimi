@@ -1,0 +1,29 @@
+=====================================================
+    Kaynakça Yönetimi - Pardus Yazılım Kampı 2013    
+=====================================================
+    Bora Canbula - bora.canbula@cbu.edu.tr           
+    İlkin Sencar - ilkinsencar@ogr.cbu.edu.tr        
+=====================================================
+    Temmuz Ayı 2. Gelişme Raporu                     
+=====================================================
+- İlk olarak geliştirilmesi planlanan özellikleri 
+tetikleyecek komutları çalıştaracak butonları içeren 
+araç çubuğu eklendi ve menü çubuğu da bu yönde 
+düzenlendi.
+- Kullanılacak olan SQLite veritabanının ilkel 
+taslağı hazırlandı.
+- Daha etkin ve planlı geliştirme yapabilmek için 
+yeni bir klasör yapısı belirlendi.
+- Hem değişen klasör yapısını hem de yeni eklenen 
+veritabanı ile ilgili kütüphaneleri karşılayan yeni 
+bir Makefile dosyası oluşturuldu.
+- ISBN numarası girilen kitabın başlık, yazar, 
+yayıncı, konu vb. bilgilerini çevrimiçi kaynaklardan 
+bularak kitabın kapak resmi için de kullanıcıya öneri
+sunan ve bu bilgileri SQLite veritabanına kaydeden 
+PHP kodu yazıldı.
+- Kullanıcının ISBN numarasını gireceği ve programın 
+bulduğu çevrimiçi bilgileri görerek onaylayacağı bir 
+diyalog geliştirildi ve araç çubuğu ve menü çubuğunda
+ilgili komutlara bağlandı.
+=====================================================
