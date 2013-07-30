@@ -6,6 +6,7 @@ public:
 	KaynakcaYonetimi(const wxString& title);
 	
 	void EkleKitapDialog(wxCommandEvent& event);
+	void EkleMakaleDialog(wxCommandEvent& event);
 	void OnQuit(wxCommandEvent& event);
 	
 	wxMenuBar *menubar;

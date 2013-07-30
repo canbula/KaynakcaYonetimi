@@ -1,5 +1,6 @@
 #include "kaynakcayonetimi.h"
 #include "eklekitap.h"
+#include "eklemakale.h"
 
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(800,600))
@@ -41,6 +42,8 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::OnQuit));
 	Connect(ID_TOOLBAR_BOOK,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleKitapDialog));
 	Connect(ID_ADDMENU_BOOK,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleKitapDialog));
+	Connect(ID_TOOLBAR_ARTICLE,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
+	Connect(ID_ADDMENU_ARTICLE,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
 	Centre();
@@ -50,7 +53,26 @@ void KaynakcaYonetimi::EkleKitapDialog(wxCommandEvent& event)
 {
 	EkleKitap eklekitap(wxT("Yeni Kitap Ekle"));
 	if(eklekitap.ShowModal() == wxID_OK) {
+		wxString tempstring;
+		tempstring << wxT("Hopidik:") << eklekitap.GetNewBookISBN();
+		//tempstring << wxT("Ekledim");
+		wxMessageDialog *dial = new wxMessageDialog(NULL,tempstring,wxT("Info"),wxOK);
+		dial->ShowModal();
+		// buraya onaylanan verilerin veritabanına kaydı ile ilgili kodların yazılması gerekiyor
 		eklekitap.Destroy();
+	}
+}
+
+void KaynakcaYonetimi::EkleMakaleDialog(wxCommandEvent& event)
+{
+	EkleMakale eklemakale(wxT("Yeni Makale Ekle"));
+	if(eklemakale.ShowModal() == wxID_OK) {
+		wxString tempstring;
+		tempstring << wxT("Ekledim");
+		wxMessageDialog *dial = new wxMessageDialog(NULL,tempstring,wxT("Info"),wxOK);
+		dial->ShowModal();
+		// buraya onaylanan verilerin veritabanına kaydı ile ilgili kodların yazılması gerekiyor
+		eklemakale.Destroy();
 	}
 }
 

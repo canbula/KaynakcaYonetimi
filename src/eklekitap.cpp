@@ -222,3 +222,13 @@ wxString EkleKitap::GetNewBookTitle()
 {
 	return booktitle->GetValue();
 }
+
+void EkleKitap::SaveBook()
+{
+	bookisbn->GetValue();
+	booktitle->GetValue();
+	bookauthors->GetValue();
+	bookpublisher->GetValue();
+	booksubject->GetValue();
+	bookcover->GetValue();
+}

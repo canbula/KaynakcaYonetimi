@@ -12,6 +12,7 @@ public:
 	void SetISBNCover4(wxCommandEvent& event);
 	wxString GetNewBookISBN();
 	wxString GetNewBookTitle();
+	void SaveBook();
 	
 	wxTextCtrl *bookisbn;
 	wxTextCtrl *booktitle;
