@@ -1,0 +1,28 @@
+=====================================================
+    Kaynakça Yönetimi - Pardus Yazılım Kampı 2013    
+=====================================================
+    Bora Canbula - bora.canbula@cbu.edu.tr           
+    İlkin Sencar - ilkinsencar@ogr.cbu.edu.tr        
+=====================================================
+    Ağustos Ayı 1. Gelişme Raporu                     
+=====================================================
+- DOI numarası girilen makalenin başlık, yazarlar, 
+dergi, cilt, sayı, sayfa numarası, yayınlanma tarihi 
+vb. bilgilerini çevrimiçi kaynaklardan bularak SQLite
+veritabanına kaydeden Python kodu yazıldı.
+- Kullanıcının DOI numarasını gireceği ve programın 
+bulduğu çevrimiçi bilgileri görerek isterse 
+değişiklik yaparak onaylayacağı bir diyalog 
+geliştirildi ve araç ve menü çubuklarında ilgili 
+komutlara bağlantısı yapıldı.
+- DOI numarası bilinmeyen bir makalenin sadece 
+başlıca yazarın soyadının ve başlığın bir kısmının 
+girilmesi ile DOI numarasını çevrimiçi kaynaklardan 
+bulan Python kodu yazıldı ve istenirse bu DOI 
+numarasının veritabanına eklenmesi için ilgili 
+diyaloğu tetikleyen bir diyalog geliştirildi.
+- SQLite veritabanı eklenen yeni özellikleri 
+karşılayacak şekilde güncellendi.
+- Makefile yeni eklenen kaynak dosyalarını da 
+derleyecek şekilde güncellendi.
+=====================================================
