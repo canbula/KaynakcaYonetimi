@@ -21,6 +21,10 @@
 #include <wx/stdpaths.h>
 #include <wx/filename.h>
 #include <wx/busyinfo.h>
+#include <wx/wxhtml.h>
+#include <wx/choice.h>
+#include <wx/arrstr.h>
+#include <wx/tokenzr.h>
 #include <wx/wxsqlite3.h>
 
 const wxStandardPaths stdPath;

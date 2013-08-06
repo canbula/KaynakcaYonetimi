@@ -1,6 +1,7 @@
 #include "kaynakcayonetimi.h"
 #include "eklekitap.h"
 #include "eklemakale.h"
+#include "buldoi.h"
 
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(800,600))
@@ -24,6 +25,9 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	add->Append(ID_ADDMENU_FILE,wxT("Dosya"));
 	add->Append(ID_ADDMENU_LIST,wxT("Liste"));
 	menubar->Append(add,wxT("Ekle"));
+	tool = new wxMenu;
+	tool->Append(ID_TOOLMENU_FINDDOI,wxT("DOI Bul"));
+	menubar->Append(tool,wxT("Araçlar"));
 	SetMenuBar(menubar);
 	
 	wxToolBar *toolbar = CreateToolBar();
@@ -44,6 +48,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_ADDMENU_BOOK,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleKitapDialog));
 	Connect(ID_TOOLBAR_ARTICLE,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
 	Connect(ID_ADDMENU_ARTICLE,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
+	Connect(ID_TOOLMENU_FINDDOI,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulDOIDialog));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
 	Centre();
@@ -54,7 +59,7 @@ void KaynakcaYonetimi::EkleKitapDialog(wxCommandEvent& event)
 	EkleKitap eklekitap(wxT("Yeni Kitap Ekle"));
 	if(eklekitap.ShowModal() == wxID_OK) {
 		wxString tempstring;
-		tempstring << wxT("Hopidik:") << eklekitap.GetNewBookISBN();
+		tempstring << wxT("Eklendi:") << eklekitap.GetNewBookISBN();
 		//tempstring << wxT("Ekledim");
 		wxMessageDialog *dial = new wxMessageDialog(NULL,tempstring,wxT("Info"),wxOK);
 		dial->ShowModal();
@@ -65,7 +70,7 @@ void KaynakcaYonetimi::EkleKitapDialog(wxCommandEvent& event)
 
 void KaynakcaYonetimi::EkleMakaleDialog(wxCommandEvent& event)
 {
-	EkleMakale eklemakale(wxT("Yeni Makale Ekle"));
+	EkleMakale eklemakale(wxT("Yeni Makale Ekle"),wxT(""));
 	if(eklemakale.ShowModal() == wxID_OK) {
 		wxString tempstring;
 		tempstring << wxT("Ekledim");
@@ -73,6 +78,20 @@ void KaynakcaYonetimi::EkleMakaleDialog(wxCommandEvent& event)
 		dial->ShowModal();
 		// buraya onaylanan verilerin veritabanına kaydı ile ilgili kodların yazılması gerekiyor
 		eklemakale.Destroy();
+	}
+}
+
+void KaynakcaYonetimi::BulDOIDialog(wxCommandEvent& event)
+{
+	BulDOI buldoi(wxT("DOI Numarası Bulma Aracı"));
+	if(buldoi.ShowModal() == wxID_OK) {
+		EkleMakale eklemakale(wxT("Yeni Makale Ekle"),buldoi.GetDOI());
+		if(eklemakale.ShowModal() == wxID_OK) {
+			eklemakale.Destroy();
+		}
+		//wxMessageDialog *dial = new wxMessageDialog(NULL,replymessage,wxT("Info"),wxOK);
+		//dial->ShowModal();
+		buldoi.Destroy();
 	}
 }
 

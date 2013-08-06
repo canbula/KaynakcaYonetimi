@@ -3,7 +3,7 @@
 class EkleMakale : public wxDialog
 {
 public:
-	EkleMakale(const wxString& title);
+	EkleMakale(const wxString& title,const wxString& doi);
 	void OnQuit(wxCommandEvent& event);
 	void DOIRetrieve(wxCommandEvent& event);
 	void SavePaper();

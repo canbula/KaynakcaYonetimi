@@ -1,6 +1,6 @@
 #include "eklemakale.h"
 
-EkleMakale::EkleMakale(const wxString& title)
+EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	: wxDialog(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(500,500))
 {
 	
@@ -38,6 +38,7 @@ EkleMakale::EkleMakale(const wxString& title)
 	wxBoxSizer *mid1hbox = new wxBoxSizer(wxHORIZONTAL);
 	mid1hbox->Add(new wxStaticText(mid1panel,-1,wxT("DOI Numarası")),1,wxEXPAND);
 	paperdoi = new wxTextCtrl(mid1panel,-1,wxT(""),wxPoint(-1,-1),wxSize(360,-1));
+	paperdoi->SetValue(doi);
 	mid1hbox->Add(paperdoi,0,wxALIGN_RIGHT);
 	mid1panel->SetSizer(mid1hbox);
 	vbox->Add(mid1panel,0,wxEXPAND);

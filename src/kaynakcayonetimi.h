@@ -7,11 +7,13 @@ public:
 	
 	void EkleKitapDialog(wxCommandEvent& event);
 	void EkleMakaleDialog(wxCommandEvent& event);
+	void BulDOIDialog(wxCommandEvent& event);
 	void OnQuit(wxCommandEvent& event);
 	
 	wxMenuBar *menubar;
 	wxMenu *file;
 	wxMenu *add;
+	wxMenu *tool;
 	wxStatusBar *statusbar;
 };
 
@@ -27,3 +29,5 @@ const int ID_TOOLBAR_ARTICLE = 703;
 const int ID_TOOLBAR_DOCUMENT = 704;
 const int ID_TOOLBAR_FILE = 705;
 const int ID_TOOLBAR_LIST = 706;
+
+const int ID_TOOLMENU_FINDDOI = 801;

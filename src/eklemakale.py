@@ -30,7 +30,7 @@ def DOIsearch(DOInumber):
 		title = removetags(dom.getElementsByTagName('title')[0].toxml())
 		for i in range(len(dom.getElementsByTagName('given_name'))):
 			givenname = removetags(dom.getElementsByTagName('given_name')[i].toxml())
-			givenname = givenname.replace(" ", "")
+			givenname = givenname.replace(". ", ".")
 			surname = removetags(dom.getElementsByTagName('surname')[i].toxml())
 			if i > 0:
 				authors = authors + ', ' + givenname + ' ' + surname
@@ -42,23 +42,20 @@ def DOIsearch(DOInumber):
 			else:
 				journal = removetags(dom.getElementsByTagName('title')[0].toxml())
 				title = removetags(dom.getElementsByTagName('title')[1].toxml())
-			volume = ''
-			issue = ''
-			itemnumber = ''
 		else:
 			journal = removetags(dom.getElementsByTagName('full_title')[0].toxml())
-			if len(dom.getElementsByTagName('volume')) > 0:
-				volume = removetags(dom.getElementsByTagName('volume')[0].toxml())
-			else:
-				volume = ''
-			if len(dom.getElementsByTagName('issue')) > 0:
-				issue = removetags(dom.getElementsByTagName('issue')[0].toxml())
-			else:
-				issue = ''
-			if len(dom.getElementsByTagName('item_number')) > 0:
-				itemnumber = removetags(dom.getElementsByTagName('item_number')[0].toxml())
-			else:
-				itemnumber = ''
+		if len(dom.getElementsByTagName('volume')) > 0:
+			volume = removetags(dom.getElementsByTagName('volume')[0].toxml())
+		else:
+			volume = ''
+		if len(dom.getElementsByTagName('issue')) > 0:
+			issue = removetags(dom.getElementsByTagName('issue')[0].toxml())
+		else:
+			issue = ''
+		if len(dom.getElementsByTagName('item_number')) > 0:
+			itemnumber = removetags(dom.getElementsByTagName('item_number')[0].toxml())
+		else:
+			itemnumber = ''
 		if len(dom.getElementsByTagName('first_page')) > 0:
 			firstpage = removetags(dom.getElementsByTagName('first_page')[0].toxml())
 		else:
