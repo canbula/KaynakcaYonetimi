@@ -1,6 +1,6 @@
 #include "eklekitap.h"
 
-EkleKitap::EkleKitap(const wxString& title)
+EkleKitap::EkleKitap(const wxString& title,const wxString& isbn)
 	: wxDialog(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(500,500))
 {
 	
@@ -38,6 +38,7 @@ EkleKitap::EkleKitap(const wxString& title)
 	wxBoxSizer *mid1hbox = new wxBoxSizer(wxHORIZONTAL);
 	mid1hbox->Add(new wxStaticText(mid1panel,-1,wxT("ISBN Numarası")),1,wxEXPAND);
 	bookisbn = new wxTextCtrl(mid1panel,-1,wxT(""),wxPoint(-1,-1),wxSize(360,-1));
+	bookisbn->SetValue(isbn);
 	mid1hbox->Add(bookisbn,0,wxALIGN_RIGHT);
 	mid1panel->SetSizer(mid1hbox);
 	vbox->Add(mid1panel,0,wxEXPAND);
@@ -149,6 +150,7 @@ EkleKitap::EkleKitap(const wxString& title)
 	Connect(ADDBOOK_DIALOG_COVER_4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(EkleKitap::SetISBNCover4));
 	
 	Centre();
+	
 }
 
 void EkleKitap::OnQuit(wxCommandEvent& WXUNUSED(event))

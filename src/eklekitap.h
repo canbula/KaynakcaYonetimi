@@ -3,7 +3,7 @@
 class EkleKitap : public wxDialog
 {
 public:
-	EkleKitap(const wxString& title);
+	EkleKitap(const wxString& title,const wxString& isbn);
 	void OnQuit(wxCommandEvent& event);
 	void ISBNRetrieve(wxCommandEvent& event);
 	void SetISBNCover1(wxCommandEvent& event);

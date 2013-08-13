@@ -25,6 +25,7 @@
 #include <wx/choice.h>
 #include <wx/arrstr.h>
 #include <wx/tokenzr.h>
+#include <wx/event.h>
 #include <wx/wxsqlite3.h>
 
 const wxStandardPaths stdPath;

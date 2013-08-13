@@ -8,6 +8,7 @@ public:
 	void EkleKitapDialog(wxCommandEvent& event);
 	void EkleMakaleDialog(wxCommandEvent& event);
 	void BulDOIDialog(wxCommandEvent& event);
+	void BulISBNDialog(wxCommandEvent& event);
 	void OnQuit(wxCommandEvent& event);
 	
 	wxMenuBar *menubar;
@@ -30,4 +31,5 @@ const int ID_TOOLBAR_DOCUMENT = 704;
 const int ID_TOOLBAR_FILE = 705;
 const int ID_TOOLBAR_LIST = 706;
 
-const int ID_TOOLMENU_FINDDOI = 801;
+const int ID_TOOLMENU_FINDISBN = 801;
+const int ID_TOOLMENU_FINDDOI = 802;

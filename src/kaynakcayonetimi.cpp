@@ -1,6 +1,7 @@
 #include "kaynakcayonetimi.h"
 #include "eklekitap.h"
 #include "eklemakale.h"
+#include "bulisbn.h"
 #include "buldoi.h"
 
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
@@ -26,6 +27,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	add->Append(ID_ADDMENU_LIST,wxT("Liste"));
 	menubar->Append(add,wxT("Ekle"));
 	tool = new wxMenu;
+	tool->Append(ID_TOOLMENU_FINDISBN,wxT("ISBN Bul"));
 	tool->Append(ID_TOOLMENU_FINDDOI,wxT("DOI Bul"));
 	menubar->Append(tool,wxT("Araçlar"));
 	SetMenuBar(menubar);
@@ -48,6 +50,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_ADDMENU_BOOK,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleKitapDialog));
 	Connect(ID_TOOLBAR_ARTICLE,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
 	Connect(ID_ADDMENU_ARTICLE,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
+	Connect(ID_TOOLMENU_FINDISBN,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulISBNDialog));
 	Connect(ID_TOOLMENU_FINDDOI,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulDOIDialog));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
@@ -56,7 +59,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 
 void KaynakcaYonetimi::EkleKitapDialog(wxCommandEvent& event)
 {
-	EkleKitap eklekitap(wxT("Yeni Kitap Ekle"));
+	EkleKitap eklekitap(wxT("Yeni Kitap Ekle"),wxT(""));
 	if(eklekitap.ShowModal() == wxID_OK) {
 		wxString tempstring;
 		tempstring << wxT("Eklendi:") << eklekitap.GetNewBookISBN();
@@ -78,6 +81,18 @@ void KaynakcaYonetimi::EkleMakaleDialog(wxCommandEvent& event)
 		dial->ShowModal();
 		// buraya onaylanan verilerin veritabanına kaydı ile ilgili kodların yazılması gerekiyor
 		eklemakale.Destroy();
+	}
+}
+
+void KaynakcaYonetimi::BulISBNDialog(wxCommandEvent& event)
+{
+	BulISBN bulisbn(wxT("ISBN Numarası Bulma Aracı"));
+	if(bulisbn.ShowModal() == wxID_OK) {
+		EkleKitap eklekitap(wxT("Yeni Kitap Ekle"),bulisbn.GetISBN());
+		if(eklekitap.ShowModal() == wxID_OK) {
+			eklekitap.Destroy();
+		}
+		bulisbn.Destroy();
 	}
 }
 
