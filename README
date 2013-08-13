@@ -1,5 +1,19 @@
-Programı derlemek için yalnızca make komutunu kullanmanız yeterlidir.
+Programı derlemek için aşağıdaki paketleri kurduktan sonra 
+make komutunu kullanmanız yeterlidir.
 
-Derleme tamamlandıktan sonra ./KaynakcaYonetimi çalıştırılabilir dosyası ile programı açabilirsiniz.
+g++
+libwxbase2.8-dev
+libwxsqlite3-2.8-dev
+python-mechanize
+python-tidylib
+python-pdfminer
+python-pyPdf
+php5-cli
+php5-sqlite
+php-services-json
 
-Ayrıca diğer platformlar için hazırlanan bazı Makefile dosyaları da build klasörüne eklenmiştir.
+Derleme tamamlandıktan sonra ./KaynakcaYonetimi 
+çalıştırılabilir dosyası ile programı açabilirsiniz.
+
+Ayrıca diğer platformlar için hazırlanan bazı Makefile 
+dosyaları da build klasöründe bulunabilir.
