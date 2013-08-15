@@ -5,15 +5,16 @@
 #include "buldoi.h"
 
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
-	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(800,600))
+	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(960,720))
 {
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap toolbarLibrary(appLocation+wxT("resource/toolbar/Library.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarBook(appLocation+wxT("resource/toolbar/Book.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarArticle(appLocation+wxT("resource/toolbar/Article.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarDocument(appLocation+wxT("resource/toolbar/Document.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarFile(appLocation+wxT("resource/toolbar/File.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarList(appLocation+wxT("resource/toolbar/List.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarLibrary(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarBook(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarArticle(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarDocument(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarFile(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarList(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap menubarAbout(appLocation+wxT("resource/toolbar/info.png"),wxBITMAP_TYPE_PNG);
 	
 	menubar = new wxMenuBar;
 	file = new wxMenu;
@@ -30,11 +31,25 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	tool->Append(ID_TOOLMENU_FINDISBN,wxT("ISBN Bul"));
 	tool->Append(ID_TOOLMENU_FINDDOI,wxT("DOI Bul"));
 	menubar->Append(tool,wxT("Araçlar"));
+	help = new wxMenu;
+	//help->Append(ID_HELPMENU_ABOUT,wxT("Hakkında"));
+	//menubar->Append(help,wxT("Yardım"));
+	wxMenuItem *helpItem = new wxMenuItem(help,ID_HELPMENU_ABOUT,wxT("Hakkında"));
+	helpItem->SetBitmap(menubarAbout);
+	help->Append(helpItem);
+	menubar->Append(help,wxT("Yardım"));
 	SetMenuBar(menubar);
+
+	/////////////////////////////////////////////////////////////////////
+	// wxMenuItem *help = new wxMenuItem(menubar,ID_HELPMENU_ABOUT);
+	// help->SetBitmap(wxArtProvider::GetBitmap(wxART_WARNING));
+	// menubar->Append(help);
+	/////////////////////////////////////////////////////////////////////
 	
-	wxToolBar *toolbar = CreateToolBar();
+	wxToolBar *toolbar = CreateToolBar(wxTB_TEXT);
 	toolbar->AddTool(ID_TOOLBAR_LIBRARY,wxT("Kaynaklar"),toolbarLibrary);
-	toolbar->AddTool(ID_TOOLBAR_BOOK,wxT("Kitap"),toolbarBook);
+	toolbar->AddTool(ID_TOOLBAR_BOOK,wxT("Kaynaklar"),toolbarBook);
+	toolbar->AddSeparator();
 	toolbar->AddTool(ID_TOOLBAR_ARTICLE,wxT("Makale"),toolbarArticle);
 	toolbar->AddTool(ID_TOOLBAR_DOCUMENT,wxT("Doküman"),toolbarDocument);
 	toolbar->AddTool(ID_TOOLBAR_FILE,wxT("Dosya"),toolbarFile);
@@ -52,6 +67,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_ADDMENU_ARTICLE,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
 	Connect(ID_TOOLMENU_FINDISBN,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulISBNDialog));
 	Connect(ID_TOOLMENU_FINDDOI,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulDOIDialog));
+	Connect(ID_HELPMENU_ABOUT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::OnAbout));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
 	Centre();
@@ -108,6 +124,16 @@ void KaynakcaYonetimi::BulDOIDialog(wxCommandEvent& event)
 		//dial->ShowModal();
 		buldoi.Destroy();
 	}
+}
+
+void KaynakcaYonetimi::OnAbout(wxCommandEvent& WXUNUSED(event))
+{
+	wxAboutDialogInfo info;
+	info.SetName(wxT("Kaynakça Yönetimi"));
+	info.SetVersion(wxT("0.0.1"));
+	info.SetDescription(wxT("Kaynakça öğelerini barındıran bir veritabanını yönetecek ve tez veya makalelerde kullanılmak üzere seçilen öğeleri barındıran kaynakça listelerini istenilen biçimde otomatik oluşturan bir program."));
+	info.SetCopyright(wxT("Pardus Yazılım Kampı 2013 (C) Bora CANBULA <bora.canbula@cbu.edu.tr>"));
+	wxAboutBox(info);
 }
 
 void KaynakcaYonetimi::OnQuit(wxCommandEvent& WXUNUSED(event))

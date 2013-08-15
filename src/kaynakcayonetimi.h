@@ -10,11 +10,13 @@ public:
 	void BulDOIDialog(wxCommandEvent& event);
 	void BulISBNDialog(wxCommandEvent& event);
 	void OnQuit(wxCommandEvent& event);
+	void OnAbout(wxCommandEvent& event);
 	
 	wxMenuBar *menubar;
 	wxMenu *file;
 	wxMenu *add;
 	wxMenu *tool;
+	wxMenu *help;
 	wxStatusBar *statusbar;
 };
 
@@ -33,3 +35,5 @@ const int ID_TOOLBAR_LIST = 706;
 
 const int ID_TOOLMENU_FINDISBN = 801;
 const int ID_TOOLMENU_FINDDOI = 802;
+
+const int ID_HELPMENU_ABOUT = 901;
