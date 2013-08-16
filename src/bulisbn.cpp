@@ -6,7 +6,7 @@ BulISBN::BulISBN(const wxString& title)
 {
 	
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/Book.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/barcode.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);

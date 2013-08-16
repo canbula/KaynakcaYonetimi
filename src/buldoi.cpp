@@ -6,7 +6,7 @@ BulDOI::BulDOI(const wxString& title)
 {
 	
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/Article.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/serial-number.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);

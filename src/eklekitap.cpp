@@ -5,7 +5,7 @@ EkleKitap::EkleKitap(const wxString& title,const wxString& isbn)
 {
 	
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/Book.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/book.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);

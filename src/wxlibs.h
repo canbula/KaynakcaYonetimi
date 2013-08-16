@@ -12,6 +12,7 @@
 #include <wx/dialog.h>
 #include <wx/event.h>
 #include <wx/filename.h>
+#include <wx/imaglist.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
 #include <wx/notebook.h>

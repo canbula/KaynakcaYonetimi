@@ -5,7 +5,7 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 {
 	
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/Article.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/contract2.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);

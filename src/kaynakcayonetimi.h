@@ -12,14 +12,15 @@ public:
 	void OnQuit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 	
-	wxMenuBar *menubar;
-	wxMenu *file;
-	wxMenu *add;
-	wxMenu *tool;
-	wxMenu *help;
-	wxStatusBar *statusbar;
+	//wxMenuBar *menubar;
+	//wxMenu *file;
+	//wxMenu *add;
+	//wxMenu *tool;
+	//wxMenu *help;
+	//wxStatusBar *statusbar;
 };
 
+/*
 const int ID_ADDMENU_BOOK = 502;
 const int ID_ADDMENU_ARTICLE = 503;
 const int ID_ADDMENU_DOCUMENT = 504;
@@ -37,3 +38,14 @@ const int ID_TOOLMENU_FINDISBN = 801;
 const int ID_TOOLMENU_FINDDOI = 802;
 
 const int ID_HELPMENU_ABOUT = 901;
+*/
+
+const int ID_TOOLBAR_ADDBOOK = 501;
+const int ID_TOOLBAR_ADDARTICLE = 502;
+const int ID_TOOLBAR_ADDDOCUMENT = 503;
+const int ID_TOOLBAR_ADDFILE = 504;
+const int ID_TOOLBAR_ADDLIST = 505;
+const int ID_TOOLBAR_FINDISBN = 506;
+const int ID_TOOLBAR_FINDDOI = 507;
+const int ID_TOOLBAR_HELP = 508;
+const int ID_TOOLBAR_ABOUT = 509;
