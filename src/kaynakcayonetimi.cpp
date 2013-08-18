@@ -5,7 +5,7 @@
 #include "buldoi.h"
 
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
-	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(960,700))
+	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(960,700),wxDEFAULT_FRAME_STYLE & ~ (wxRESIZE_BORDER|wxMAXIMIZE_BOX))
 {
 	wxImage::AddHandler(new wxPNGHandler);
 	wxBitmap toolbarLibrary(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
@@ -110,7 +110,47 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 
 	wxNotebook *middlenb = new wxNotebook(middlepanel,-1,wxPoint(-1,-1),wxSize(-1,-1));
 	wxPanel *middlesub0 = new wxPanel(middlenb,-1);
+
 	wxPanel *middlesub1 = new wxPanel(middlenb,-1);
+	
+	wxBoxSizer *bookhbox = new wxBoxSizer(wxHORIZONTAL);
+	wxListCtrl *booklist = new wxListCtrl(middlesub1,wxID_ANY,wxPoint(-1,-1),wxSize(-1,-1),wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+	wxListItem col0;
+	col0.SetId(0);
+	col0.SetText(wxT("Sutun 1"));
+	//col0.SetWidth(50);
+	booklist->InsertColumn(0, col0);
+	booklist->SetColumnWidth(0,120);
+	wxListItem col1;
+	col1.SetId(1);
+	col1.SetText(wxT("Sutun 2"));
+	//col1.SetWidth(50);
+	booklist->InsertColumn(1, col1);
+	booklist->SetColumnWidth(1,120);
+	wxListItem col2;
+	wxSize mainSize = this->GetSize();
+	// Burayi wxEVT_SIZE ile kontrol altinda tutmak gerekecek.
+	wxString boraaa;
+	boraaa << mainSize.GetWidth() << wxT(" ") << mainSize.GetHeight();
+	col2.SetId(2);
+	col2.SetText(boraaa);
+	//col2.SetWidth(50);
+	booklist->InsertColumn(2, col2);
+	booklist->SetColumnWidth(2,mainSize.GetWidth()-240-240);
+	for(int n=0;n<30;n++)
+	{
+		wxListItem item;
+		item.SetId(n);
+		//item.SetText(wxT("Satir"));
+		if(n%2==1) item.SetBackgroundColour(wxColour(245,245,255));
+		booklist->InsertItem(item);
+		booklist->SetItem(n,0,wxT("bilgi 1"));
+		booklist->SetItem(n,1,wxT("bilgi 2"));
+		booklist->SetItem(n,2,wxT("bilgi 3"));
+	}
+	bookhbox->Add(booklist,1,wxALIGN_CENTER|wxEXPAND);
+	middlesub1->SetSizer(bookhbox);
+
 	wxPanel *middlesub2 = new wxPanel(middlenb,-1);
 	wxPanel *middlesub3 = new wxPanel(middlenb,-1);
 	wxPanel *middlesub4 = new wxPanel(middlenb,-1);

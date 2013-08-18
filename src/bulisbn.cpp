@@ -7,6 +7,9 @@ BulISBN::BulISBN(const wxString& title)
 	
 	wxImage::AddHandler(new wxPNGHandler);
 	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/barcode.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap searchButton(appLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap okButton(appLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap cancelButton(appLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
@@ -35,25 +38,38 @@ BulISBN::BulISBN(const wxString& title)
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
 	vbox->Add(-1,10);
 	
-	wxPanel *mid1panel = new wxPanel(subpanel,-1);
+	wxPanel *midhpanel = new wxPanel(subpanel,-1);
+	wxBoxSizer *midhbox = new wxBoxSizer(wxHORIZONTAL);
+	
+	wxPanel *midvpanel = new wxPanel(midhpanel,-1);
+	wxBoxSizer *midvbox = new wxBoxSizer(wxVERTICAL);
+	
+	wxPanel *mid1panel = new wxPanel(midvpanel,-1);
 	wxBoxSizer *mid1hbox = new wxBoxSizer(wxHORIZONTAL);
-	mid1hbox->Add(new wxStaticText(mid1panel,-1,wxT("Başlıca Yazarın Soyadı")),1,wxEXPAND);
-	srcauthor = new wxTextCtrl(mid1panel,-1,wxT(""),wxPoint(-1,-1),wxSize(300,-1));
+	mid1hbox->Add(new wxStaticText(mid1panel,-1,wxT("Başlıca Yazarın Soyadı ")),1,wxEXPAND);
+	srcauthor = new wxTextCtrl(mid1panel,-1,wxT(""),wxPoint(-1,-1),wxSize(260,-1));
 	mid1hbox->Add(srcauthor,0,wxALIGN_RIGHT);
 	mid1panel->SetSizer(mid1hbox);
-	vbox->Add(mid1panel,0,wxEXPAND);
-	
-	vbox->Add(-1,10);
-	wxPanel *mid2panel = new wxPanel(subpanel,-1);
+	midvbox->Add(mid1panel,0,wxEXPAND);
+	midvbox->Add(-1,10);
+	wxPanel *mid2panel = new wxPanel(midvpanel,-1);
 	wxBoxSizer *mid2hbox = new wxBoxSizer(wxHORIZONTAL);
-	mid2hbox->Add(new wxStaticText(mid2panel,-1,wxT("Kitabın Adı")),1,wxEXPAND);
-	srctitle = new wxTextCtrl(mid2panel,-1,wxT(""),wxPoint(-1,-1),wxSize(300,-1));
+	mid2hbox->Add(new wxStaticText(mid2panel,-1,wxT("Kitabın Adı ")),1,wxEXPAND);
+	srctitle = new wxTextCtrl(mid2panel,-1,wxT(""),wxPoint(-1,-1),wxSize(260,-1));
 	mid2hbox->Add(srctitle,0,wxALIGN_RIGHT);
 	mid2panel->SetSizer(mid2hbox);
-	vbox->Add(mid2panel,0,wxEXPAND);
-
-	vbox->Add(-1,10);
-	vbox->Add(new wxButton(subpanel,FINDISBN_DIALOG_RETRIEVE,wxT("ISBN Numarasını Bul")),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
+	midvbox->Add(mid2panel,0,wxEXPAND);
+	
+	midvpanel->SetSizer(midvbox);
+	
+	midhbox->Add(midvpanel,0,wxEXPAND);
+	midhbox->Add(new wxStaticText(midhpanel,-1,wxT("")),1,wxEXPAND);
+	midhbox->Add(new wxBitmapButton(midhpanel,FINDISBN_DIALOG_RETRIEVE,searchButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
+	
+	midhpanel->SetSizer(midhbox);
+	
+	vbox->Add(midhpanel,0,wxEXPAND);
+	
 	vbox->Add(-1,10);
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
 	
@@ -65,12 +81,14 @@ BulISBN::BulISBN(const wxString& title)
 	
 	wxPanel *bottompanel = new wxPanel(subpanel,-1);
 	wxBoxSizer *bottomhbox = new wxBoxSizer(wxHORIZONTAL);
+	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),0,wxEXPAND);
 	wxArrayString isbnnumbers;
 	isbnnumbers.Add(wxT("Bir ISBN numarası seçebilirsiniz"));
-	isbnnumber = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(280,-1),isbnnumbers);
-	bottomhbox->Add(isbnnumber,1,wxEXPAND);
-	bottomhbox->Add(new wxButton(bottompanel,wxID_CANCEL,wxT("Vazgeç")),0,wxALIGN_BOTTOM|wxALIGN_RIGHT);
-	bottomhbox->Add(new wxButton(bottompanel,wxID_OK,wxT("Ekle")),0,wxALIGN_BOTTOM|wxALIGN_RIGHT);
+	isbnnumber = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(300,-1),isbnnumbers);
+	bottomhbox->Add(isbnnumber,0,wxEXPAND);
+	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),1,wxEXPAND);
+	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_CANCEL,cancelButton),0,wxALIGN_BOTTOM|wxALIGN_RIGHT);
+	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_OK,okButton),0,wxALIGN_BOTTOM|wxALIGN_RIGHT);
 	bottompanel->SetSizer(bottomhbox);
 	vbox->Add(bottompanel,0,wxEXPAND);
 	

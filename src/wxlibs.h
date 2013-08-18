@@ -1,6 +1,11 @@
 #ifndef _WXLIBS_H
 #define _WXLIBS_H
 
+//#include "<wx/wxprec.h>"
+//#ifndef WX_PRECOMP
+//	#include "<wx/wx.h>"
+//#endif
+
 #include <wx/wx.h>
 #include <wx/aboutdlg.h>
 #include <wx/arrstr.h>
@@ -9,10 +14,14 @@
 #include <wx/bmpbuttn.h>
 #include <wx/busyinfo.h>
 #include <wx/choice.h>
+#include <wx/colour.h>
 #include <wx/dialog.h>
 #include <wx/event.h>
 #include <wx/filename.h>
+#include <wx/gdicmn.h>
+#include <wx/grid.h>
 #include <wx/imaglist.h>
+#include <wx/listctrl.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
 #include <wx/notebook.h>

@@ -9,6 +9,7 @@ public:
 	void SavePaper();
 	
 	wxTextCtrl *paperdoi;
+	wxTextCtrl *paperrefid;
 	wxTextCtrl *papertitle;
 	wxTextCtrl *paperauthors;
 	wxTextCtrl *paperjournal;
