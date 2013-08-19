@@ -1,0 +1,32 @@
+=====================================================
+    Kaynakça Yönetimi - Pardus Yazılım Kampı 2013    
+=====================================================
+    Bora Canbula - bora.canbula@cbu.edu.tr           
+    İlkin Sencar - ilkinsencar@ogr.cbu.edu.tr        
+=====================================================
+    Ağustos Ayı 2. Gelişme Raporu                     
+=====================================================
+- ISBN numarası bilinmeyen bir kitabın sadece başlıca
+yazarının soyadının ve kitabın isminin bir kısmının 
+girilmesi ile ISBN numarasını çevrimiçi kaynaklardan 
+bulan PHP kodu yazıldı ve istenirse bulunan ISBN 
+numaralarından seçilen birinin veritabanına eklenmesi
+için ilgili diyaloğu tetikleyen bir diyalog 
+geliştirildi.
+- Görsel kullanıcı arabiriminde iyileştirmeler ve 
+değişiklikler yapıldı.
+- Araç çubuğu daha kapsamlı hale getirilerek menü 
+çubuğu şimdilik kaldırıldı. Proje tamamlanırken 
+menü çubuğunun daha kullanışlı ve etkin olmasının 
+nasıl sağlanacağı konusunda çalışma yapılarak tekrar 
+programa eklenecektir.
+- Programda verilerin kullanıcıya gösterileceği kısım
+için sekmeli bir görünüm hazırlandı ve veritabanı ile 
+gerekli bağlantıların yapılacağı aşamaya getirildi.
+- Lisans sorunu olmayan ücretsiz simge setleri ile 
+program görsel olarak zenginleştirildi.
+- SQLite veritabanı eklenen yeni özellikleri 
+karşılayacak şekilde güncellendi.
+- Makefile yeni eklenen kaynak dosyalarını da 
+derleyecek şekilde güncellendi.
+=====================================================
