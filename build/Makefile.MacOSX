@@ -9,7 +9,7 @@ KaynakcaYonetimi.app: KaynakcaYonetimi
 	mv KaynakcaYonetimi KaynakcaYonetimi.app/Contents/MacOS/KaynakcaYonetimi
 	cp resource/Mac/KaynakcaYonetimiMacIcons.icns KaynakcaYonetimi.app/Contents/Resources/
 KaynakcaYonetimi:
-	g++ -lsqlite3 -lwxcode_`wx-config --basename | cut -d'_' -f 2,3`_wxsqlite3-`wx-config --release` `wx-config --cxxflags --libs` -o KaynakcaYonetimi src/main.cpp src/main.h src/kaynakcayonetimi.cpp src/kaynakcayonetimi.h src/eklekitap.cpp src/eklekitap.h src/eklemakale.cpp src/eklemakale.h src/bulisbn.cpp src/bulisbn.h src/buldoi.cpp src/buldoi.h src/ekleliste.cpp src/ekleliste.h src/ekleajanda.cpp src/ekleajanda.h src/md5.cpp src/md5.h src/wxlibs.h
+	g++ -lsqlite3 -lwxcode_`wx-config --basename | cut -d'_' -f 2,3`_wxsqlite3-`wx-config --release` `wx-config --cxxflags --libs` -o KaynakcaYonetimi src/main.cpp src/main.h src/kaynakcayonetimi.cpp src/kaynakcayonetimi.h src/eklekitap.cpp src/eklekitap.h src/eklemakale.cpp src/eklemakale.h src/bulisbn.cpp src/bulisbn.h src/buldoi.cpp src/buldoi.h src/ekleliste.cpp src/ekleliste.h src/gosterliste.cpp src/gosterliste.h src/ekleajanda.cpp src/ekleajanda.h src/md5.cpp src/md5.h src/wxlibs.h
 install:
 	cp -rf KaynakcaYonetimi.app /Applications/KaynakcaYonetimi.app
 uninstall:
