@@ -36,6 +36,7 @@ def DOIsearch(DOInumber):
 				authors = authors + ', ' + givenname + ' ' + surname
 			else:
 				authors = givenname + ' ' + surname
+				refid = surname.lower()
 		if len(dom.getElementsByTagName('conference')) > 0:
 			if len(dom.getElementsByTagName('proceedings_title')) > 0:
 				journal = removetags(dom.getElementsByTagName('proceedings_title')[0].toxml())
@@ -76,6 +77,7 @@ def DOIsearch(DOInumber):
 		else:
 			year = ''
 		published = year + "/" + month
+		refid = refid + year
 		if len(dom.getElementsByTagName('resource')) > 0:
 			link = removetags(dom.getElementsByTagName('resource')[0].toxml())
 		else:
@@ -86,7 +88,7 @@ def DOIsearch(DOInumber):
 		con = lite.connect('db/Kaynakca.db')
 		with con:
 			cur = con.cursor()
-			cur.execute("INSERT OR REPLACE INTO paper_retrieve VALUES ('"+doi+"','"+title+"','"+authors+"','"+journal+"','"+volume+"','"+issue+"','"+firstpage+"','"+lastpage+"','"+published+"','"+link+"','"+subject+"');")
+			cur.execute("INSERT OR REPLACE INTO paper_retrieve VALUES ('"+doi+"','"+title+"','"+authors+"','"+journal+"','"+volume+"','"+issue+"','"+firstpage+"','"+lastpage+"','"+published+"','"+link+"','"+subject+"','"+refid+"');")
 		con.close()
 def main():
 	DOIsearch(sys.argv[1])

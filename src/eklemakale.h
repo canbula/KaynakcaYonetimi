@@ -5,11 +5,12 @@ class EkleMakale : public wxDialog
 public:
 	EkleMakale(const wxString& title,const wxString& doi);
 	void OnQuit(wxCommandEvent& event);
-	void DOIRetrieve(wxCommandEvent& event);
+	void DOIRetrieveTrigger(wxCommandEvent& event);
+	void DOIRetrieve();
 	void SavePaper();
+	wxString GetNewPaperDOI();
 	
 	wxTextCtrl *paperdoi;
-	wxTextCtrl *paperrefid;
 	wxTextCtrl *papertitle;
 	wxTextCtrl *paperauthors;
 	wxTextCtrl *paperjournal;
@@ -20,6 +21,8 @@ public:
 	wxTextCtrl *paperpublished;
 	wxTextCtrl *paperlink;
 	wxTextCtrl *papersubject;
+	wxTextCtrl *paperrefid;
+	wxChoice *paperstar;
 };
 
 const int ADDPAPER_DIALOG_RETRIEVE = 2201;

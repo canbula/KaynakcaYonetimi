@@ -1,7 +1,7 @@
 #include "eklemakale.h"
 
 EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
-	: wxDialog(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(500,600))
+	: wxDialog(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(500,550))
 {
 	
 	wxImage::AddHandler(new wxPNGHandler);
@@ -114,7 +114,7 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	vbox->Add(-1,10);
 	wxPanel *mid7panel = new wxPanel(subpanel,-1);
 	wxBoxSizer *mid7hbox = new wxBoxSizer(wxHORIZONTAL);
-	mid7hbox->Add(new wxStaticText(mid7panel,-1,wxT("İlk Sayfa")),1,wxEXPAND);
+	mid7hbox->Add(new wxStaticText(mid7panel,-1,wxT("İlk Sayfa / Numara")),1,wxEXPAND);
 	paperfirstpage = new wxTextCtrl(mid7panel,-1,wxT(""),wxPoint(-1,-1),wxSize(300,-1));
 	mid7hbox->Add(paperfirstpage,0,wxALIGN_RIGHT);
 	mid7panel->SetSizer(mid7hbox);
@@ -123,7 +123,7 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	vbox->Add(-1,10);
 	wxPanel *mid8panel = new wxPanel(subpanel,-1);
 	wxBoxSizer *mid8hbox = new wxBoxSizer(wxHORIZONTAL);
-	mid8hbox->Add(new wxStaticText(mid8panel,-1,wxT("Son Sayfa / Numara")),1,wxEXPAND);
+	mid8hbox->Add(new wxStaticText(mid8panel,-1,wxT("Son Sayfa")),1,wxEXPAND);
 	paperlastpage = new wxTextCtrl(mid8panel,-1,wxT(""),wxPoint(-1,-1),wxSize(300,-1));
 	mid8hbox->Add(paperlastpage,0,wxALIGN_RIGHT);
 	mid8panel->SetSizer(mid8hbox);
@@ -157,6 +157,15 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	vbox->Add(mid11panel,0,wxEXPAND);
 	
 	vbox->Add(-1,10);
+	wxPanel *mid12panel = new wxPanel(subpanel,-1);
+	wxBoxSizer *mid12hbox = new wxBoxSizer(wxHORIZONTAL);
+	mid12hbox->Add(new wxStaticText(mid12panel,-1,wxT("Referans Kimliği")),1,wxEXPAND);
+	paperrefid = new wxTextCtrl(mid12panel,-1,wxT(""),wxPoint(-1,-1),wxSize(300,-1));
+	mid12hbox->Add(paperrefid,0,wxALIGN_RIGHT);
+	mid12panel->SetSizer(mid12hbox);
+	vbox->Add(mid12panel,0,wxEXPAND);
+	
+	vbox->Add(-1,10);
 	
 	vbox->Add(new wxStaticText(subpanel,-1,wxT("")),1,wxEXPAND);
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
@@ -164,9 +173,17 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	
 	wxPanel *bottompanel = new wxPanel(subpanel,-1);
 	wxBoxSizer *bottomhbox = new wxBoxSizer(wxHORIZONTAL);
-	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("Referans Kimliği ")),0,wxEXPAND);
-	paperrefid = new wxTextCtrl(bottompanel,-1,wxT(""),wxPoint(-1,-1),wxSize(180,-1));
-	bottomhbox->Add(paperrefid,0);
+	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT(" ")),0,wxEXPAND);
+	wxArrayString paperstars;
+	paperstars.Add(wxT("Beğeni"));
+	paperstars.Add(wxT("0"));
+	paperstars.Add(wxT("1"));
+	paperstars.Add(wxT("2"));
+	paperstars.Add(wxT("3"));
+	paperstars.Add(wxT("4"));
+	paperstars.Add(wxT("5"));
+	paperstar = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),paperstars);
+	bottomhbox->Add(paperstar,0,wxEXPAND);
 	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),1,wxEXPAND);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_CANCEL,cancelButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_OK,okButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
@@ -178,9 +195,12 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	hbox->Add(new wxStaticText(panel,-1,wxT(" ")),0,wxEXPAND);
 	panel->SetSizer(hbox);
 	
-	Connect(ADDPAPER_DIALOG_RETRIEVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(EkleMakale::DOIRetrieve));
+	Connect(ADDPAPER_DIALOG_RETRIEVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(EkleMakale::DOIRetrieveTrigger));
 	
 	Centre();
+
+	if(doi != wxT(""))
+		EkleMakale::DOIRetrieve(); 
 }
 
 void EkleMakale::OnQuit(wxCommandEvent& WXUNUSED(event))
@@ -188,7 +208,12 @@ void EkleMakale::OnQuit(wxCommandEvent& WXUNUSED(event))
 	Close(true);
 }
 
-void EkleMakale::DOIRetrieve(wxCommandEvent& WXUNUSED(event))
+void EkleMakale::DOIRetrieveTrigger(wxCommandEvent& WXUNUSED(event))
+{
+	EkleMakale::DOIRetrieve();
+}
+
+void EkleMakale::DOIRetrieve()
 {
 	wxString doicommand;
 	doicommand << wxT("python ") << appLocation << wxT("src/eklemakale.py '") << paperdoi->GetValue() << wxT("'");
@@ -210,6 +235,7 @@ void EkleMakale::DOIRetrieve(wxCommandEvent& WXUNUSED(event))
 	paperpublished->SetValue(doiretrieveSet.GetAsString(wxT("published")));
 	paperlink->SetValue(doiretrieveSet.GetAsString(wxT("link")));
 	papersubject->SetValue(doiretrieveSet.GetAsString(wxT("subject")));
+	paperrefid->SetValue(doiretrieveSet.GetAsString(wxT("refid")));
 	doiretrieveSet.Finalize();
 	doiretriever->Close();
 	delete doiretriever;
@@ -217,15 +243,38 @@ void EkleMakale::DOIRetrieve(wxCommandEvent& WXUNUSED(event))
 
 void EkleMakale::SavePaper()
 {
-	paperdoi->GetValue();
-	papertitle->GetValue();
-	paperauthors->GetValue();
-	paperjournal->GetValue();
-	papervolume->GetValue();
-	paperissue->GetValue();
-	paperfirstpage->GetValue();
-	paperlastpage->GetValue();
-	paperpublished->GetValue();
-	paperlink->GetValue();
-	papersubject->GetValue();
+	wxSQLite3Database *papersaver = new wxSQLite3Database();
+	papersaver->Open(appLocation+wxT("db/Kaynakca.db"));
+	wxSQLite3Statement papersaversql = papersaver->PrepareStatement(wxT("INSERT OR REPLACE INTO papers VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);"));
+	papersaversql.Bind(1,paperdoi->GetValue());
+	papersaversql.Bind(2,papertitle->GetValue());
+	papersaversql.Bind(3,paperauthors->GetValue());
+	papersaversql.Bind(4,paperjournal->GetValue());
+	papersaversql.Bind(5,papervolume->GetValue());
+	papersaversql.Bind(6,paperissue->GetValue());
+	papersaversql.Bind(7,paperfirstpage->GetValue());
+	papersaversql.Bind(8,paperlastpage->GetValue());
+	papersaversql.Bind(9,paperpublished->GetValue());
+	papersaversql.Bind(10,paperlink->GetValue());
+	papersaversql.Bind(11,papersubject->GetValue());
+	papersaversql.Bind(12,paperrefid->GetValue());
+	if(paperstar->GetSelection() == 0)
+	{
+		papersaversql.Bind(13,wxT("0"));
+	}
+	else
+	{
+		papersaversql.Bind(13,paperstar->GetString(paperstar->GetSelection()));
+	}
+	// edit kismini kodlarken paperstar->SetStringSelection(wxT("0")); yaparsin
+	papersaversql.ExecuteUpdate();
+	papersaversql.ClearBindings();
+	papersaversql.Reset();
+	papersaver->Close();
+	delete papersaver;
+}
+
+wxString EkleMakale::GetNewPaperDOI()
+{
+	return paperdoi->GetValue();
 }

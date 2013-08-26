@@ -88,7 +88,7 @@ inline vtcevap Vt(const wxString& sqlstring)
 	return vtsonuc;
 }
 
-inline void VtSilGuncelle(const wxString& sqlstring,const wxArrayString& bindvalues)
+inline void VtEkleSilGuncelle(const wxString& sqlstring,const wxArrayString& bindvalues)
 {
 	wxSQLite3Database *vtguncelleyici = new wxSQLite3Database();
 	vtguncelleyici->Open(appLocation+wxT("db/Kaynakca.db"));
