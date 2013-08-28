@@ -8,10 +8,14 @@ python-mechanize
 python-tidylib
 python-pdfminer
 python-pyPdf
+python-beautifulsoup
+python-poppler
 php5-cli
 php5-sqlite
 php-services-json
 xdg-open
+libpoppler-glib-dev
+libgtk2.0-dev
 
 Derleme tamamlandıktan sonra ./KaynakcaYonetimi 
 çalıştırılabilir dosyası ile programı açabilirsiniz.
