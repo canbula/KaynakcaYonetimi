@@ -22,6 +22,19 @@ foreach ($subjects->Subject as $subjects) {
 if(substr(trim($book["authors"]),-1)==",") {
 	$book["authors"] = substr(trim($book["authors"]),0,-1);
 }
+
+$authors = explode(",", $book["authors"]);
+$authornames  = explode(' ',$authors[0]);
+$refidlength = 0;
+$book["refid"] = "";
+foreach ($authornames as $name) {
+	if (strlen($name) > $refidlength) {
+		$refidlength = strlen($name);
+		$book["refid"] = strtolower($name);
+	}
+}
+$book["refid"] = preg_replace("/[^A-Za-z0-9 ]/", '', $book["refid"]).strtolower(str_replace(" ","",$book["title"]));
+
 if(substr(trim($book["subject"]),-1)==",") {
 	$book["subject"] = substr(trim($book["subject"]),0,-1);
 }
@@ -43,6 +56,19 @@ for($i=1;$i<=6;$i++) {
 }
 
 $db = new SQLite3('db/Kaynakca.db');
-$db->exec("INSERT OR REPLACE INTO book_retrieve VALUES ('".$book["isbn"]."','".$book["title"]."','".$book["authors"]."','".$book["publisher"]."','".$book["subject"]."','".$book["cover"][1]."','".$book["cover"][2]."','".$book["cover"][3]."','".$book["cover"][4]."','".$book["cover"][5]."','".$book["cover"][6]."')");
+$stmt = $db->prepare('INSERT OR REPLACE INTO book_retrieve VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
+$stmt->bindValue(1,$book["isbn"],SQLITE3_TEXT);
+$stmt->bindValue(2,$book["title"],SQLITE3_TEXT);
+$stmt->bindValue(3,$book["authors"],SQLITE3_TEXT);
+$stmt->bindValue(4,$book["publisher"],SQLITE3_TEXT);
+$stmt->bindValue(5,$book["subject"],SQLITE3_TEXT);
+$stmt->bindValue(6,$book["cover"][1],SQLITE3_TEXT);
+$stmt->bindValue(7,$book["cover"][2],SQLITE3_TEXT);
+$stmt->bindValue(8,$book["cover"][3],SQLITE3_TEXT);
+$stmt->bindValue(9,$book["cover"][4],SQLITE3_TEXT);
+$stmt->bindValue(10,$book["cover"][5],SQLITE3_TEXT);
+$stmt->bindValue(11,$book["cover"][6],SQLITE3_TEXT);
+$stmt->bindValue(12,$book["refid"],SQLITE3_TEXT);
+$stmt->execute();
 
 ?>
