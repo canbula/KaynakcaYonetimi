@@ -14,8 +14,7 @@ php5-cli
 php5-sqlite
 php-services-json
 xdg-open
-libpoppler-glib-dev
-libgtk2.0-dev
+imagemagick
 
 Derleme tamamlandıktan sonra ./KaynakcaYonetimi 
 çalıştırılabilir dosyası ile programı açabilirsiniz.
