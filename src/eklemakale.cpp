@@ -1,3 +1,20 @@
+/*
+    This file is part of KaynakcaYonetimi.
+
+    KaynakcaYonetimi is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    KaynakcaYonetimi is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with KaynakcaYonetimi.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "eklemakale.h"
 
 EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
@@ -23,7 +40,7 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	
 	wxPanel *toppanel = new wxPanel(subpanel,-1);
 	wxBoxSizer *tophbox = new wxBoxSizer(wxHORIZONTAL);
-	wxStaticText *dialogtitle = new wxStaticText(toppanel, -1, wxT("Yeni Makale Ekle"));
+	wxStaticText *dialogtitle = new wxStaticText(toppanel, -1, wxT("Makale Ekle / Düzenle"));
 	wxFont font = dialogtitle->GetFont();
 	font.SetPointSize(18);
 	font.SetWeight(wxFONTWEIGHT_BOLD);
@@ -197,15 +214,34 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	
 	Connect(ADDPAPER_DIALOG_RETRIEVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(EkleMakale::DOIRetrieveTrigger));
 	
-	Centre();
+	//Centre();
 
 	if(doi != wxT(""))
-		EkleMakale::DOIRetrieve(); 
-}
-
-void EkleMakale::OnQuit(wxCommandEvent& WXUNUSED(event))
-{
-	Close(true);
+	{
+		wxString doichecksql;
+		doichecksql << wxT("SELECT * FROM papers WHERE doi=='") << doi << wxT("'");
+		vtcevap doicheck;
+		doicheck = Vt(doichecksql);
+		if(doicheck.satir>0)
+		{
+			papertitle->SetValue(doicheck.sonuc.Item(1));
+			paperauthors->SetValue(doicheck.sonuc.Item(2));
+			paperjournal->SetValue(doicheck.sonuc.Item(3));
+			papervolume->SetValue(doicheck.sonuc.Item(4));
+			paperissue->SetValue(doicheck.sonuc.Item(5));
+			paperfirstpage->SetValue(doicheck.sonuc.Item(6));
+			paperlastpage->SetValue(doicheck.sonuc.Item(7));
+			paperpublished->SetValue(doicheck.sonuc.Item(8));
+			paperlink->SetValue(doicheck.sonuc.Item(9));
+			papersubject->SetValue(doicheck.sonuc.Item(10));
+			paperrefid->SetValue(doicheck.sonuc.Item(11));
+			paperstar->SetStringSelection(doicheck.sonuc.Item(12));
+		}
+		else
+		{
+			EkleMakale::DOIRetrieve();
+		}
+	}
 }
 
 void EkleMakale::DOIRetrieveTrigger(wxCommandEvent& WXUNUSED(event))

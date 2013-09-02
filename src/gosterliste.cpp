@@ -1,3 +1,20 @@
+/*
+    This file is part of KaynakcaYonetimi.
+
+    KaynakcaYonetimi is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    KaynakcaYonetimi is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with KaynakcaYonetimi.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "gosterliste.h"
 
 GosterListe::GosterListe(const wxString& title,wxString id)
@@ -109,8 +126,9 @@ GosterListe::GosterListe(const wxString& title,wxString id)
 	Connect(ID_SHOWLIST_DOWN,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(GosterListe::AltaIndir));
 	Connect(ID_SHOWLIST_SORT,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(GosterListe::OtoSirala));
 	Connect(ID_SHOWLIST_REMOVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(GosterListe::RefKaldir));
+	Connect(showlist->GetId(),wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(GosterListe::OgeyeGozAt));
 	
-	Centre();
+	//Centre();
 
 	if(id != wxT(""))
 		GosterListe::SayfayiHazirla();
@@ -179,6 +197,30 @@ void GosterListe::SirayiYenile()
 		VtEkleSilGuncelle(wxT("UPDATE listrefs SET number=? WHERE listid==? AND isbndoi==?"),numberupdate);
 	}
 	GosterListe::ListeyiYukle();
+}
+
+void GosterListe::OgeyeGozAt(wxListEvent &event)
+{
+	void *data = reinterpret_cast<void *>(event.GetItem().GetData());
+	wxListItem item;
+	item.SetId(showlist->GetFocusedItem());
+	item.SetColumn(0);
+	showlist->GetItem(item);
+	wxString dosyaisbndoi = showlist->GetItemText(item);
+	dosyaisbndoi.Replace(wxT("/"),wxT("|"));
+	wxString ogedosyayolu;
+	ogedosyayolu << appLocation << wxT("files/") << dosyaisbndoi;
+	if(wxFileExists(ogedosyayolu))
+	{
+		wxString openitemfilecommand;
+		openitemfilecommand << wxT("xdg-open '") << ogedosyayolu << wxT("'");
+		wxExecute(openitemfilecommand);
+	}
+	else
+	{
+		wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu öğe ile ilişkili bir dosya bulunmuyor."),wxT("Dosya Bulunamadı"),wxOK);
+		dial->ShowModal();
+	}
 }
 
 void GosterListe::UsteCikar(wxCommandEvent& event)

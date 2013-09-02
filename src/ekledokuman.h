@@ -17,17 +17,17 @@
 
 #include "wxlibs.h"
 
-class EkleAjanda : public wxDialog
+class EkleDokuman : public wxDialog
 {
 public:
-	EkleAjanda(const wxString& title,const wxString& id,const wxString& date);
+	EkleDokuman(const wxString& title,const wxString& id);
 
-	void OnQuit(wxCommandEvent& event);
 	void PrepareUpdate(const wxString& id);
-	void UpdateTodo(const wxString& id);
-	void SaveTodo();
+	void UpdateDocument(const wxString& id);
+	void SaveDocument();
+	wxString GetID();
 	
-	wxTextCtrl *tododate;
-	wxTextCtrl *todotitle;
-	wxTextCtrl *tododetails;
+	wxTextCtrl *documentname;
+	wxTextCtrl *documentdesc;
+	wxChoice *documentstar;
 };

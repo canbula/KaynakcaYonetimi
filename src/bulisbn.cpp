@@ -1,7 +1,24 @@
+/*
+    This file is part of KaynakcaYonetimi.
+
+    KaynakcaYonetimi is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    KaynakcaYonetimi is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with KaynakcaYonetimi.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "bulisbn.h"
 #include "md5.h"
 
-BulISBN::BulISBN(const wxString& title)
+BulISBN::BulISBN(const wxString& title,const wxString& pdfFile)
 	: wxDialog(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(500,500))
 {
 	
@@ -73,19 +90,123 @@ BulISBN::BulISBN(const wxString& title)
 	vbox->Add(-1,10);
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
 	
-	findisbnresults = new wxHtmlWindow(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1));
-	vbox->Add(findisbnresults,1,wxEXPAND);
+	findisbnnb = new wxNotebook(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1));
+	wxPanel *imgpanel = new wxPanel(findisbnnb,-1);
+	wxBoxSizer *imghbox = new wxBoxSizer(wxHORIZONTAL);
+	wxString isbnfrompdf = wxT("");
+	wxString rawfrompdf = wxT("");
+	if(pdfFile != wxT(""))
+	{
+		wxString convertimgcom;
+		convertimgcom << wxT("convert -density 300x300 '") << pdfFile << wxT("[0]' -resize 480x '") << appLocation << wxT("files/newbook.png'");
+		wxWindowDisabler disableAll;
+		wxBusyInfo info(wxT("Kitap yükleniyor!"), this);
+		wxExecute(convertimgcom,wxEXEC_SYNC);
+		wxArrayString output;
+		wxArrayString errors;
+		wxString outputtype;
+		wxString findisbnpdfcommand;
+		findisbnpdfcommand << wxT("python ") << appLocation << wxT("src/bulisbnpdf.py '") << pdfFile << wxT("'");
+		wxExecute(findisbnpdfcommand,output,errors,wxEXEC_SYNC);
+		if(output.GetCount() > 0)
+		{
+			wxStringTokenizer outputtkz(output.Item(0),wxT(":"));
+			int i=0;
+			while(outputtkz.HasMoreTokens())
+			{
+				wxString outputtoken = outputtkz.GetNextToken();
+				if(i==0) outputtype = outputtoken;
+				if(i==1)
+				{
+					if(outputtype == wxT("meta"))
+					{
+						wxStringTokenizer isbnpdftkz(outputtoken,wxT(";"));
+						int j=0;
+						while(isbnpdftkz.HasMoreTokens())
+						{
+							wxString isbnpdftoken = isbnpdftkz.GetNextToken();
+							if(j==0) srcauthor->SetValue(isbnpdftoken);
+							if(j==1) srctitle->SetValue(isbnpdftoken);
+							j=1;
+						}
+					}
+					if(outputtype == wxT("isbn"))
+					{
+						isbnfrompdf = outputtoken;
+					}
+					if(outputtype == wxT("raw"))
+					{
+						rawfrompdf = outputtoken;
+					}
+				}
+				i=1;
+			}
+		}
+		tekerlipencere = new wxScrolledWindow(imgpanel,-1);
+		wxBitmap imgofPdf(appLocation+wxT("files/newbook.png"),wxBITMAP_TYPE_PNG);
+		wxStaticBitmap *tekericiresim = new wxStaticBitmap(tekerlipencere, -1, imgofPdf);
+		int nWidth = imgofPdf.GetWidth();
+		int nHeight = imgofPdf.GetHeight();
+  		tekerlipencere->SetScrollbars(0, 10, 0, nHeight/10);
+		tekerlipencere->SetBackgroundColour(wxColour(255,255,255));
+		imghbox->Add(tekerlipencere,1,wxEXPAND);
+	}
+	imgpanel->SetSizer(imghbox);
+
+	wxPanel *filpanel = new wxPanel(findisbnnb,-1);
+	wxBoxSizer *filhbox = new wxBoxSizer(wxHORIZONTAL);
+	findisbnlistcolumns = new wxArrayString();
+	findisbnlistcolumndesc = new wxArrayString();
+	int findisbnlistcolumnwidths[] = {100,100,80,210};
+	findisbnlistcolumns->Add(wxT("isbn"));findisbnlistcolumndesc->Add(wxT("ISBN"));
+	findisbnlistcolumns->Add(wxT("authors"));findisbnlistcolumndesc->Add(wxT("Yazarlar"));
+	findisbnlistcolumns->Add(wxT("publisher"));findisbnlistcolumndesc->Add(wxT("Yayıncı"));
+	findisbnlistcolumns->Add(wxT("title"));findisbnlistcolumndesc->Add(wxT("Kitap İsmi"));
+	findisbnlist = new wxListView(filpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLC_REPORT|wxLC_HRULES|wxLC_SINGLE_SEL);
+	for(int i=0;i<4;i++)
+	{
+		wxListItem findisbnlistcol;
+		findisbnlistcol.SetId(i);
+		findisbnlistcol.SetText(findisbnlistcolumndesc->Item(i));
+		findisbnlist->InsertColumn(i,findisbnlistcol);
+		findisbnlist->SetColumnWidth(i,findisbnlistcolumnwidths[i]);
+	}
+	if(isbnfrompdf != wxT(""))
+	{
+		wxListItem item;
+		item.SetId(0);
+		item.SetBackgroundColour(wxColour(255,205,205));
+		findisbnlist->InsertItem(item);
+		findisbnlist->SetItem(0,0,isbnfrompdf);
+		findisbnlist->SetItem(0,1,wxT("-"));
+		findisbnlist->SetItem(0,2,wxT("-"));
+		findisbnlist->SetItem(0,3,wxT("PDF dosyasının içinde bulundu."));
+	}
+	filhbox->Add(findisbnlist,1,wxALIGN_CENTER|wxEXPAND);
+	filpanel->SetSizer(filhbox);
+
+	findisbnnb->AddPage(imgpanel,wxT("Kitap Önizleme"),true);
+	findisbnnb->AddPage(filpanel,wxT("Arama Sonuçları"),false);
+	if(rawfrompdf != wxT(""))
+	{
+		wxPanel *rawpanel = new wxPanel(findisbnnb,-1);
+		wxBoxSizer *rawhbox = new wxBoxSizer(wxHORIZONTAL);
+		rawfrompdf.Replace(wxT(";"),wxT("\n"));
+		wxTextCtrl *rawtextctrl = new wxTextCtrl(rawpanel,-1,rawfrompdf,wxPoint(-1,-1),wxSize(-1,-1),wxTE_MULTILINE);
+		rawhbox->Add(rawtextctrl,1,wxALIGN_CENTER|wxEXPAND);
+		rawpanel->SetSizer(rawhbox);
+		findisbnnb->AddPage(rawpanel,wxT("PDF Taraması"));
+	}
 	
+	if(isbnfrompdf != wxT("") or pdfFile == wxT("")) findisbnnb->SetSelection(1);
+	if(rawfrompdf != wxT("")) findisbnnb->SetSelection(2);
+	vbox->Add(findisbnnb,1,wxEXPAND);
+
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
 	vbox->Add(-1,10);
 	
 	wxPanel *bottompanel = new wxPanel(subpanel,-1);
 	wxBoxSizer *bottomhbox = new wxBoxSizer(wxHORIZONTAL);
-	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),0,wxEXPAND);
-	wxArrayString isbnnumbers;
-	isbnnumbers.Add(wxT("Bir ISBN numarası seçebilirsiniz"));
-	isbnnumber = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(300,-1),isbnnumbers);
-	bottomhbox->Add(isbnnumber,0,wxEXPAND);
 	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),1,wxEXPAND);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_CANCEL,cancelButton),0,wxALIGN_BOTTOM|wxALIGN_RIGHT);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_OK,okButton),0,wxALIGN_BOTTOM|wxALIGN_RIGHT);
@@ -100,12 +221,7 @@ BulISBN::BulISBN(const wxString& title)
 	
 	Connect(FINDISBN_DIALOG_RETRIEVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(BulISBN::FindISBNRetrieve));
 	
-	Centre();
-}
-
-void BulISBN::OnQuit(wxCommandEvent& WXUNUSED(event))
-{
-	Close(true);
+	//Centre();
 }
 
 void BulISBN::FindISBNRetrieve(wxCommandEvent& WXUNUSED(event))
@@ -118,27 +234,33 @@ void BulISBN::FindISBNRetrieve(wxCommandEvent& WXUNUSED(event))
 	wxWindowDisabler disableAll;
 	wxBusyInfo info(wxT("Kitap çevrimiçi veritabanında aranıyor!"), this);
 	wxExecute(findisbncommand,wxEXEC_SYNC);
-	wxSQLite3Database *findisbnretriever = new wxSQLite3Database();
-	findisbnretriever->Open(appLocation+wxT("db/Kaynakca.db"));
-	wxString findisbnretrievesql;
-	findisbnretrievesql << wxT("SELECT * FROM findisbn WHERE authortitle = '") << authortitle << wxT("';");
-	wxSQLite3ResultSet findisbnretrieveSet = findisbnretriever->ExecuteQuery(findisbnretrievesql);
-	findisbnresults->SetPage(findisbnretrieveSet.GetAsString(wxT("result")));
-	isbnnumber->Clear();
-	wxStringTokenizer isbntkz(findisbnretrieveSet.GetAsString(wxT("isbnnumbers")),wxT(";"));
-	while(isbntkz.HasMoreTokens()) {
-		wxString isbntoken = isbntkz.GetNextToken();
-		isbnnumber->Append(isbntoken);
+
+	findisbnlist->DeleteAllItems();
+	wxString findisbnlistsql;
+	findisbnlistsql << wxT("SELECT * FROM findisbn WHERE authortitle=='") << authortitle << wxT("';");
+	vtcevap findisbnlistcevap;
+	findisbnlistcevap = Vt(findisbnlistsql);
+	for(int i=0;i<findisbnlistcevap.satir;i++)
+	{
+		wxListItem item;
+		item.SetId(i);
+		if(i%2==1) item.SetBackgroundColour(wxColour(245,245,255));
+		findisbnlist->InsertItem(item);
+		findisbnlist->SetItem(i,0,findisbnlistcevap.sonuc.Item(i*findisbnlistcevap.sutun+1));
+		findisbnlist->SetItem(i,1,findisbnlistcevap.sonuc.Item(i*findisbnlistcevap.sutun+2));
+		findisbnlist->SetItem(i,2,findisbnlistcevap.sonuc.Item(i*findisbnlistcevap.sutun+3));
+		findisbnlist->SetItem(i,3,findisbnlistcevap.sonuc.Item(i*findisbnlistcevap.sutun+4));
 	}
-	isbnnumber->SetSelection(0);
-	findisbnretrieveSet.Finalize();
-	findisbnretriever->Close();
-	delete findisbnretriever;
+	if(findisbnlist->GetItemCount() > 0)
+		findisbnlist->RefreshItems(0,findisbnlist->GetItemCount()-1);
+	findisbnnb->SetSelection(1);
 }
 
 wxString BulISBN::GetISBN()
 {
-	wxString isbnstring;
-	isbnstring << isbnnumber->GetString(isbnnumber->GetSelection());
-	return isbnstring;
+	wxListItem item;
+	item.SetId(findisbnlist->GetFocusedItem());
+	item.SetColumn(0);
+	findisbnlist->GetItem(item);
+	return findisbnlist->GetItemText(item);
 }

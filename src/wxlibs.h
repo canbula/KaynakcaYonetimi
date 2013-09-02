@@ -1,3 +1,20 @@
+/*
+    This file is part of KaynakcaYonetimi.
+
+    KaynakcaYonetimi is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    KaynakcaYonetimi is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with KaynakcaYonetimi.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef _WXLIBS_H
 #define _WXLIBS_H
 
@@ -20,9 +37,13 @@
 #include <wx/datectrl.h>
 #include <wx/datetime.h>
 #include <wx/dialog.h>
+#include <wx/dir.h>
 #include <wx/dnd.h>
 #include <wx/event.h>
+#include <wx/file.h>
+#include <wx/filefn.h>
 #include <wx/filename.h>
+#include <wx/filepicker.h>
 #include <wx/gdicmn.h>
 #include <wx/grid.h>
 #include <wx/imaglist.h>
@@ -31,6 +52,8 @@
 #include <wx/menuitem.h>
 #include <wx/mimetype.h>
 #include <wx/notebook.h>
+#include <wx/regex.h>
+#include <wx/scrolwin.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/splitter.h>
