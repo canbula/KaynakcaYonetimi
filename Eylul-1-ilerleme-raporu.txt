@@ -1,0 +1,35 @@
+=====================================================
+    Kaynakça Yönetimi - Pardus Yazılım Kampı 2013    
+=====================================================
+    Bora Canbula - bora.canbula@cbu.edu.tr           
+    İlkin Sencar - ilkinsencar@ogr.cbu.edu.tr        
+=====================================================
+    Eylül Ayı 1. Gelişme Raporu                     
+=====================================================
+- Referans listelerini ve listelerle ilişkilendirilen 
+öğeleri yöneten diyaloglar geliştirildi.
+- PDF dosyalarının üstverilerini ve gerekirse 
+içeriklerini de tarayan Python kodu yazıldı.
+- Düzenli ifadeler kullanılarak dosyaların adında 
+veya PDF dosyalarının içinde geçen DOI ve ISBN 
+numaralarının otomatik olarak bulunması sağlandı.
+- Dosya eklemelerinde PDF ve DJVU dosyalarının ilk 
+sayfalarının kullanıcıya gösterilmesi sağlandı.
+- Programa eklenecek öğeler 4 ana başlıkta (kitaplar,
+makaleler, dokümanlar ve dosyalar) toplandı ve 
+bu öğelerin eklenme/düzenleme/silme işlemlerinin 
+yürütüldüğü diyaloglar ve programın ana penceresinde
+bu öğeleri gösteren fonksiyonların geliştirilmesi 
+tamamlandı.
+- Menü çubuğu yeniden düzenlenerek programa tekrar
+eklendi.
+- SQLite veritabanı eklenen yeni özellikleri 
+karşılayacak şekilde güncellendi.
+- Makefile yeni eklenen kaynak dosyalarını da 
+derleyecek şekilde güncellendi.
+- Referans listelerinin çıktılarını verecek ve arama 
+yapacak fonksiyonlar haricinde programın kodlaması 
+tamamlandı, bundan sonraki süreçte programın test 
+edilmesi, yardım menüsü içeriğinin hazırlanması ve 
+dokümantasyon aşamaları tamamlanacaktır.
+=====================================================
