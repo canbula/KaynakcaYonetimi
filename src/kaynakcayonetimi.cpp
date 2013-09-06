@@ -25,6 +25,7 @@
 #include "ekleajanda.h"
 #include "bulisbn.h"
 #include "buldoi.h"
+#include "arama.h"
 
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(960,700))//,wxDEFAULT_FRAME_STYLE & ~ (wxRESIZE_BORDER|wxMAXIMIZE_BOX))
@@ -55,24 +56,25 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	wxMenuBar *menubar = new wxMenuBar;
 	wxMenu *file = new wxMenu;
 	wxMenu *fromfile = new wxMenu;
-	fromfile->Append(wxID_FILE1,wxT("Kitap Olarak"));
-	fromfile->Append(wxID_FILE2,wxT("Makale Olarak"));
-	fromfile->Append(wxID_FILE3,wxT("Doküman Olarak"));
-	fromfile->Append(wxID_FILE4,wxT("Dosya Olarak"));
+	fromfile->Append(wxID_FILE1,wxT("Kitap Olarak\tCtrl+1"));
+	fromfile->Append(wxID_FILE2,wxT("Makale Olarak\tCtrl+2"));
+	fromfile->Append(wxID_FILE3,wxT("Doküman Olarak\tCtrl+3"));
+	fromfile->Append(wxID_FILE4,wxT("Dosya Olarak\tCtrl+4"));
 	file->Append(wxID_FILE,wxT("Dosya Ekle"),fromfile);
 	file->AppendSeparator();
 	file->Append(wxID_EXIT,wxT("Kapat"));
 	menubar->Append(file,wxT("Dosya"));
 	wxMenu *add = new wxMenu;
-	add->Append(ID_ADDMENU_BOOK,wxT("Kitap"));
-	add->Append(ID_ADDMENU_ARTICLE,wxT("Makale"));
-	add->Append(ID_ADDMENU_DOCUMENT,wxT("Doküman"));
-	add->Append(ID_ADDMENU_FILE,wxT("Dosya"));
-	add->Append(ID_ADDMENU_LIST,wxT("Liste"));
+	add->Append(ID_ADDMENU_BOOK,wxT("Kitap\tAlt+1"));
+	add->Append(ID_ADDMENU_ARTICLE,wxT("Makale\tAlt+2"));
+	add->Append(ID_ADDMENU_DOCUMENT,wxT("Doküman\tAlt+3"));
+	add->Append(ID_ADDMENU_FILE,wxT("Dosya\tAlt+4"));
+	add->Append(ID_ADDMENU_LIST,wxT("Liste\tAlt+5"));
 	menubar->Append(add,wxT("Ekle"));
 	wxMenu *tool = new wxMenu;
-	tool->Append(ID_TOOLMENU_FINDISBN,wxT("ISBN Bul"));
-	tool->Append(ID_TOOLMENU_FINDDOI,wxT("DOI Bul"));
+	tool->Append(ID_TOOLMENU_FINDISBN,wxT("ISBN Bul\tCtrl+I"));
+	tool->Append(ID_TOOLMENU_FINDDOI,wxT("DOI Bul\tCtrl+D"));
+	tool->Append(ID_TOOLMENU_SEARCH,wxT("Arama Yap\tCtrl+F"));
 	menubar->Append(tool,wxT("Araçlar"));
 	//help = new wxMenu;
 	//help->Append(ID_HELPMENU_ABOUT,wxT("Hakkında"));
@@ -126,14 +128,14 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	//wxTextCtrl *toolbarSearchTC = new wxTextCtrl(righttoolbar,wxID_ANY,wxT(""),wxPoint(-1,-1),wxSize(100,-1));
 	//righttoolbar->AddControl(toolbarSearchTC);
 	wxSearchCtrl *toolbarSearchBox = new wxSearchCtrl(righttoolbar,-1,wxT(""),wxPoint(-1,-1),wxSize(-1,-1),wxTE_PROCESS_ENTER);
-	wxMenu *searchMenu = new wxMenu;
-	searchMenu->Append(-1,wxT("Genel Arama"));
-	searchMenu->Append(-1,wxT("Yazar Arama"));
-	searchMenu->Append(-1,wxT("ISBN Numarası ile Arama"));
-	searchMenu->Append(-1,wxT("DOI Numarası ile Arama"));
-	toolbarSearchBox->SetMenu(searchMenu);
+	//wxMenu *searchMenu = new wxMenu;
+	//searchMenu->Append(-1,wxT("Genel Arama"));
+	//searchMenu->Append(-1,wxT("Yazar Arama"));
+	//searchMenu->Append(-1,wxT("ISBN Numarası ile Arama"));
+	//searchMenu->Append(-1,wxT("DOI Numarası ile Arama"));
+	//toolbarSearchBox->SetMenu(searchMenu);
 	righttoolbar->AddControl(toolbarSearchBox);
-	righttoolbar->AddTool(-1,wxT("Ara"),toolbarSearch);
+	righttoolbar->AddTool(ID_TOOLBAR_SEARCH,wxT("Ara"),toolbarSearch);
 	righttoolbar->Realize();
 
 	wxToolBar *lasttoolbar = new wxToolBar(toolbarpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxTB_TEXT);
@@ -362,6 +364,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_ADDMENU_ARTICLE,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
 	Connect(ID_ADDMENU_DOCUMENT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleDokumanDialog));
 	Connect(ID_ADDMENU_FILE,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleDosyaDialog));
+	Connect(ID_ADDMENU_LIST,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::EkleListeDialog));
 	Connect(ID_TOOLBAR_ADDBOOK,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleKitapDialog));
 	Connect(ID_TOOLBAR_ADDARTICLE,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleMakaleDialog));
 	Connect(ID_TOOLBAR_ADDDOCUMENT,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleDokumanDialog));
@@ -369,8 +372,10 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_TOOLBAR_ADDLIST,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::EkleListeDialog));
 	Connect(ID_TOOLMENU_FINDISBN,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulISBNDialog));
 	Connect(ID_TOOLMENU_FINDDOI,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::BulDOIDialog));
+	Connect(ID_TOOLMENU_SEARCH,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::AramaKutusuDialog));
 	Connect(ID_TOOLBAR_FINDISBN,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::BulISBNDialog));
 	Connect(ID_TOOLBAR_FINDDOI,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::BulDOIDialog));
+	Connect(ID_TOOLBAR_SEARCH,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::AramaKutusuDialog));
 	Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::Hakkinda));
 	Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::Kapat));
 	Connect(booklist->GetId(),wxEVT_COMMAND_LIST_COL_CLICK,wxListEventHandler(KaynakcaYonetimi::KitapSirala));
@@ -427,8 +432,7 @@ void KaynakcaYonetimi::Hakkinda(wxCommandEvent& WXUNUSED(event))
 void KaynakcaYonetimi::Kapat(wxCommandEvent& WXUNUSED(event)) {Close(true);}
 void KaynakcaYonetimi::Arama(wxCommandEvent& WXUNUSED(event))
 {
-	wxMessageDialog dial(this,wxT("Arama fonksiyonunu henüz kodlamadım."),wxT("Arama"),wxOK);
-	dial.ShowModal();
+	//KaynakcaYonetimi::MakaleleriYukle(wxT(""));
 }
 /////////////////////////////////////////////////
 // Kitap ////////////////////////////////////////
@@ -463,11 +467,29 @@ void KaynakcaYonetimi::BulISBNDialog(wxCommandEvent& event)
 		bulisbn.Destroy();
 	}
 }
-void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter)
+void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& query)
 {
 	booklist->DeleteAllItems();
 	wxString booklistsql;
 	booklistsql << wxT("SELECT * FROM books");
+	if(query != wxT(""))
+	{
+		wxStringTokenizer searchtkz(query,wxT(" "));
+		int i = 0;
+		while(searchtkz.HasMoreTokens())
+		{
+			wxString srcquery = searchtkz.GetNextToken();
+			if(i==0)
+			{
+				booklistsql << wxT(" WHERE (isbn LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR publisher LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+			}
+			else
+			{
+				booklistsql << wxT(" OR (isbn LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR publisher LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+			}
+			i++;
+		}
+	}
 	if(sorter != wxT("")) booklistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
 	vtcevap booklistcevap;
 	booklistcevap = Vt(booklistsql);
@@ -804,11 +826,29 @@ void KaynakcaYonetimi::BulDOIDialog(wxCommandEvent& event)
 		buldoi.Destroy();
 	}
 }
-void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter)
+void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& query)
 {
 	paperlist->DeleteAllItems();
 	wxString paperlistsql;
 	paperlistsql << wxT("SELECT * FROM papers");
+	if(query != wxT(""))
+	{
+		wxStringTokenizer searchtkz(query,wxT(" "));
+		int i = 0;
+		while(searchtkz.HasMoreTokens())
+		{
+			wxString srcquery = searchtkz.GetNextToken();
+			if(i==0)
+			{
+				paperlistsql << wxT(" WHERE (doi LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR journal LIKE '\%") << srcquery << wxT("\%' OR published LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+			}
+			else
+			{
+				paperlistsql << wxT(" OR (doi LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR journal LIKE '\%") << srcquery << wxT("\%' OR published LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+			}
+			i++;
+		}
+	}
 	if(sorter != wxT("")) paperlistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
 	vtcevap paperlistcevap;
 	paperlistcevap = Vt(paperlistsql);
@@ -1159,11 +1199,29 @@ void KaynakcaYonetimi::EkleDokumanDialog(wxCommandEvent& event)
 		ekledokuman.Destroy();
 	}
 }
-void KaynakcaYonetimi::DokumanlariYukle(const wxString& sorter)
+void KaynakcaYonetimi::DokumanlariYukle(const wxString& sorter,const wxString& query)
 {
 	documentlist->DeleteAllItems();
 	wxString documentlistsql;
 	documentlistsql << wxT("SELECT * FROM documents");
+	if(query != wxT(""))
+	{
+		wxStringTokenizer searchtkz(query,wxT(" "));
+		int i = 0;
+		while(searchtkz.HasMoreTokens())
+		{
+			wxString srcquery = searchtkz.GetNextToken();
+			if(i==0)
+			{
+				documentlistsql << wxT(" WHERE (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
+			}
+			else
+			{
+				documentlistsql << wxT(" OR (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
+			}
+			i++;
+		}
+	}
 	if(sorter != wxT("")) documentlistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
 	vtcevap documentlistcevap;
 	documentlistcevap = Vt(documentlistsql);
@@ -1398,11 +1456,29 @@ void KaynakcaYonetimi::EkleDosyaDialog(wxCommandEvent& event)
 		ekledosya.Destroy();
 	}
 }
-void KaynakcaYonetimi::DosyalariYukle(const wxString& sorter)
+void KaynakcaYonetimi::DosyalariYukle(const wxString& sorter,const wxString& query)
 {
 	filelist->DeleteAllItems();
 	wxString filelistsql;
 	filelistsql << wxT("SELECT * FROM files");
+	if(query != wxT(""))
+	{
+		wxStringTokenizer searchtkz(query,wxT(" "));
+		int i = 0;
+		while(searchtkz.HasMoreTokens())
+		{
+			wxString srcquery = searchtkz.GetNextToken();
+			if(i==0)
+			{
+				filelistsql << wxT(" WHERE (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
+			}
+			else
+			{
+				filelistsql << wxT(" OR (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
+			}
+			i++;
+		}
+	}
 	if(sorter != wxT("")) filelistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
 	vtcevap filelistcevap;
 	filelistcevap = Vt(filelistsql);
@@ -1817,5 +1893,21 @@ void KaynakcaYonetimi::AjandaSagTik(wxListEvent &event)
 		ajandasagtikmenu.Append(ID_TODORCMENU_DELETE,wxT("Sil"));
 		ajandasagtikmenu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::AjandaSagTikTik, NULL, this);
 		PopupMenu(&ajandasagtikmenu);
+	}
+}
+/////////////////////////////////////////////////
+// Arama ////////////////////////////////////////
+/////////////////////////////////////////////////
+void KaynakcaYonetimi::AramaKutusuDialog(wxCommandEvent& event)
+{
+	AramaKutusu aramakutusu(wxT("Arama Yap"));
+	if(aramakutusu.ShowModal() == wxID_OK) {
+		wxString squery = aramakutusu.GetQuery();
+		wxString stype = aramakutusu.GetType();
+		if(stype == wxT("Kitap Ara")) KaynakcaYonetimi::KitaplariYukle(wxT(""),squery);
+		if(stype == wxT("Makale Ara")) KaynakcaYonetimi::MakaleleriYukle(wxT(""),squery);
+		if(stype == wxT("Doküman Ara")) KaynakcaYonetimi::DokumanlariYukle(wxT(""),squery);
+		if(stype == wxT("Dosya Ara")) KaynakcaYonetimi::DosyalariYukle(wxT(""),squery);
+		aramakutusu.Destroy();
 	}
 }

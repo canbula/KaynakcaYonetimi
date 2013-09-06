@@ -31,6 +31,7 @@ public:
 		ID_ADDMENU_LIST,
 		ID_TOOLMENU_FINDISBN,
 		ID_TOOLMENU_FINDDOI,
+		ID_TOOLMENU_SEARCH,
 		ID_TOOLBAR_ADDBOOK,
 		ID_TOOLBAR_ADDARTICLE,
 		ID_TOOLBAR_ADDDOCUMENT,
@@ -38,6 +39,7 @@ public:
 		ID_TOOLBAR_ADDLIST,
 		ID_TOOLBAR_FINDISBN,
 		ID_TOOLBAR_FINDDOI,
+		ID_TOOLBAR_SEARCH,
 		ID_TOOLBAR_HELP,
 		ID_TOOLBAR_ABOUT,
 		ID_BOOKRCMENU_EDIT,
@@ -64,13 +66,14 @@ public:
 	void Kapat(wxCommandEvent& event);
 	void Hakkinda(wxCommandEvent& event);
 	void Arama(wxCommandEvent& event);
+	wxSearchCtrl* toolbarSearchBox;
 	wxNotebook* middlenb;
 	
 	// Kitap
 	void DosyaEkleKitapDialog(wxCommandEvent& event);
 	void EkleKitapDialog(wxCommandEvent& event);
 	void BulISBNDialog(wxCommandEvent& event);
-	void KitaplariYukle(const wxString& sorter);
+	void KitaplariYukle(const wxString& sorter,const wxString& query=wxT(""));
 	void KitapSirala(wxListEvent& event);
 	void KitapSagTikList(wxCommandEvent &event);
 	void KitapSagTikTik(wxCommandEvent &event);
@@ -86,7 +89,7 @@ public:
 	void DosyaEkleMakaleDialog(wxCommandEvent& event);
 	void EkleMakaleDialog(wxCommandEvent& event);
 	void BulDOIDialog(wxCommandEvent& event);
-	void MakaleleriYukle(const wxString& sorter);
+	void MakaleleriYukle(const wxString& sorter,const wxString& query=wxT(""));
 	void MakaleSirala(wxListEvent& event);
 	void MakaleSagTikList(wxCommandEvent &event);
 	void MakaleSagTikTik(wxCommandEvent &event);
@@ -101,7 +104,7 @@ public:
 	// Doküman
 	void DosyaEkleDokumanDialog(wxCommandEvent& event);
 	void EkleDokumanDialog(wxCommandEvent& event);
-	void DokumanlariYukle(const wxString& sorter);
+	void DokumanlariYukle(const wxString& sorter,const wxString& query=wxT(""));
 	void DokumanSirala(wxListEvent& event);
 	void DokumanSagTikTik(wxCommandEvent &event);
 	void DokumanSagTik(wxListEvent &event);
@@ -115,7 +118,7 @@ public:
 	// Dosya
 	void DosyaEkleDosyaDialog(wxCommandEvent& event);
 	void EkleDosyaDialog(wxCommandEvent& event);
-	void DosyalariYukle(const wxString& sorter);
+	void DosyalariYukle(const wxString& sorter,const wxString& query=wxT(""));
 	void DosyaSirala(wxListEvent& event);
 	void DosyaSagTikTik(wxCommandEvent &event);
 	void DosyaSagTik(wxListEvent &event);
@@ -145,4 +148,7 @@ public:
 	void AjandaSagTik(wxListEvent &event);
 	wxCalendarCtrl* todocal;
 	wxListView* todolist;
+	
+	// Arama
+	void AramaKutusuDialog(wxCommandEvent& event);
 };

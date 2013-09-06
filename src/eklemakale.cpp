@@ -213,8 +213,6 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	panel->SetSizer(hbox);
 	
 	Connect(ADDPAPER_DIALOG_RETRIEVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(EkleMakale::DOIRetrieveTrigger));
-	
-	//Centre();
 
 	if(doi != wxT(""))
 	{
@@ -302,7 +300,6 @@ void EkleMakale::SavePaper()
 	{
 		papersaversql.Bind(13,paperstar->GetString(paperstar->GetSelection()));
 	}
-	// edit kismini kodlarken paperstar->SetStringSelection(wxT("0")); yaparsin
 	papersaversql.ExecuteUpdate();
 	papersaversql.ClearBindings();
 	papersaversql.Reset();
