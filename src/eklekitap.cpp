@@ -338,7 +338,7 @@ void EkleKitap::SaveBook()
 		wxString oldcoverpath;
 		wxString newcoverpath;
 		oldcoverpath << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".") << selectedbookcover << wxT(".jpeg");
-		newcoverpath << appLocation << wxT("files/") << bookisbn->GetValue() << wxT(".jpeg");
+		newcoverpath << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".jpeg");
 		wxCopyFile(oldcoverpath,newcoverpath);
 		wxString resizecommand;
 		resizecommand << wxT("convert '") << newcoverpath << wxT("' -resize 40x60 '") << newcoverpath << wxT("'");

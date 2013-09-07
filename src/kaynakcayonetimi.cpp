@@ -90,18 +90,6 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	menubar->Append(help,wxT("Yardım"));
 	SetMenuBar(menubar);
 	
-	/*
-	wxToolBar *toolbar = CreateToolBar(wxTB_TEXT);
-	toolbar->AddTool(ID_TOOLBAR_LIBRARY,wxT("Kaynaklar"),toolbarLibrary);
-	toolbar->AddTool(ID_TOOLBAR_BOOK,wxT("Kaynaklar"),toolbarBook);
-	toolbar->AddSeparator();
-	toolbar->AddTool(ID_TOOLBAR_ARTICLE,wxT("Makale"),toolbarArticle);
-	toolbar->AddTool(ID_TOOLBAR_DOCUMENT,wxT("Doküman"),toolbarDocument);
-	toolbar->AddTool(ID_TOOLBAR_FILE,wxT("Dosya"),toolbarFile);
-	toolbar->AddTool(ID_TOOLBAR_LIST,wxT("Liste"),toolbarList);
-	toolbar->Realize();
-	*/
-	
 	wxStatusBar *statusbar = new wxStatusBar(this,wxID_ANY,wxST_SIZEGRIP);
 	this->SetStatusBar(statusbar);
 	statusbar->SetStatusText(wxT("Kaynakça Yönetimi - Pardus Yazılım Kampı 2013"));
@@ -109,7 +97,6 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	////////////////////////////
 	wxPanel *mainpanel = new wxPanel(this,-1);
 	wxBoxSizer *mainvbox = new wxBoxSizer(wxVERTICAL);
-	
 	
 	wxPanel *toolbarpanel = new wxPanel(mainpanel,-1);
 	wxBoxSizer *toolbarhbox = new wxBoxSizer(wxHORIZONTAL);
@@ -122,31 +109,18 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	lefttoolbar->AddSeparator();
 	lefttoolbar->AddTool(ID_TOOLBAR_FINDISBN,wxT("ISBN Bul"),toolbarISBN);
 	lefttoolbar->AddTool(ID_TOOLBAR_FINDDOI,wxT("DOI Bul"),toolbarDOI);
+	lefttoolbar->AddTool(ID_TOOLBAR_SEARCH,wxT("Arama Yap"),toolbarSearch);
 	lefttoolbar->AddSeparator();
 	lefttoolbar->Realize();
-	wxToolBar *righttoolbar = new wxToolBar(toolbarpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxTB_TEXT);
-	//wxTextCtrl *toolbarSearchTC = new wxTextCtrl(righttoolbar,wxID_ANY,wxT(""),wxPoint(-1,-1),wxSize(100,-1));
-	//righttoolbar->AddControl(toolbarSearchTC);
-	wxSearchCtrl *toolbarSearchBox = new wxSearchCtrl(righttoolbar,-1,wxT(""),wxPoint(-1,-1),wxSize(-1,-1),wxTE_PROCESS_ENTER);
-	//wxMenu *searchMenu = new wxMenu;
-	//searchMenu->Append(-1,wxT("Genel Arama"));
-	//searchMenu->Append(-1,wxT("Yazar Arama"));
-	//searchMenu->Append(-1,wxT("ISBN Numarası ile Arama"));
-	//searchMenu->Append(-1,wxT("DOI Numarası ile Arama"));
-	//toolbarSearchBox->SetMenu(searchMenu);
-	righttoolbar->AddControl(toolbarSearchBox);
-	righttoolbar->AddTool(ID_TOOLBAR_SEARCH,wxT("Ara"),toolbarSearch);
-	righttoolbar->Realize();
 
 	wxToolBar *lasttoolbar = new wxToolBar(toolbarpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxTB_TEXT);
 	lasttoolbar->AddSeparator();
-	//lasttoolbar->AddTool(ID_TOOLBAR_HELP,wxT("Yardım"),toolbarHelp);
+	lasttoolbar->AddTool(ID_TOOLBAR_HELP,wxT("Yardım"),toolbarHelp);
 	lasttoolbar->AddTool(wxID_ABOUT,wxT("Hakkında"),toolbarAbout);
 	lasttoolbar->AddTool(wxID_EXIT,wxT("Çıkış"),toolbarQuit);
 	lasttoolbar->Realize();
 
 	toolbarhbox->Add(lefttoolbar,1,wxALIGN_LEFT);
-	toolbarhbox->Add(righttoolbar,0,wxALIGN_RIGHT);
 	toolbarhbox->Add(lasttoolbar,0,wxALIGN_RIGHT);
 	toolbarpanel->SetSizer(toolbarhbox);
 	mainvbox->Add(toolbarpanel,0,wxEXPAND);
@@ -400,7 +374,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	dropperlogo2->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::MakaleBirak), NULL, this);
 	dropperlogo3->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::DokumanBirak), NULL, this);
 	dropperlogo4->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::DosyaBirak), NULL, this);
-	Connect(toolbarSearchBox->GetId(),wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(KaynakcaYonetimi::Arama));
+	//Connect(toolbarSearchBox->GetId(),wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(KaynakcaYonetimi::Arama));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
 	Centre();
@@ -505,7 +479,7 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_1_file.png"),wxBITMAP_TYPE_PNG));
 	wxImage::AddHandler(new wxJPEGHandler);
 	for(int i=0;i<booklistcevap.satir;i++)
-		bookimagelist->Add(wxBitmap(appLocation+wxT("files/")+booklistcevap.sonuc.Item(i*booklistcevap.sutun+0)+wxT(".jpeg"),wxBITMAP_TYPE_JPEG));
+		bookimagelist->Add(wxBitmap(appLocation+wxT("resource/bookcovers/")+booklistcevap.sonuc.Item(i*booklistcevap.sutun+0)+wxT(".jpeg"),wxBITMAP_TYPE_JPEG));
 	booklist->SetImageList(bookimagelist,wxIMAGE_LIST_SMALL);
 	for(int i=0;i<booklistcevap.satir;i++)
 	{
@@ -520,17 +494,23 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 		booklist->SetItem(0,0,booklistcevap.sonuc.Item(i*booklistcevap.sutun+0));
 		booklist->SetItem(0,1,wxT(""));
 		booklist->SetItemColumnImage(item,1,wxAtoi(booklistcevap.sonuc.Item(i*booklistcevap.sutun+6)));
-		wxString kitapdosyayolu;
-		kitapdosyayolu << appLocation << wxT("files/") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0);
-		if(wxFileExists(kitapdosyayolu))
+		wxString dosyakontrolcommand;
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".*");
+		wxArrayString output;
+		wxArrayString errors;
+		wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+		if(output.GetCount() > 0)
 		{
-			booklist->SetItem(0,2,wxT(""));
-			booklist->SetItemColumnImage(item,2,7);
-		}
-		else
-		{
-			booklist->SetItem(0,2,wxT(""));
-			booklist->SetItemColumnImage(item,2,6);
+			if(wxFileExists(output.Item(0)))
+			{
+				booklist->SetItem(0,2,wxT(""));
+				booklist->SetItemColumnImage(item,2,7);
+			}
+			else
+			{
+				booklist->SetItem(0,2,wxT(""));
+				booklist->SetItemColumnImage(item,2,6);
+			}
 		}
 		booklist->SetItem(0,3,booklistcevap.sonuc.Item(i*booklistcevap.sutun+1));
 		booklist->SetItem(0,4,booklistcevap.sonuc.Item(i*booklistcevap.sutun+2));
@@ -717,13 +697,24 @@ void KaynakcaYonetimi::KitapCiftTik(wxListEvent &event)
 	item.SetColumn(0);
 	booklist->GetItem(item);
 	wxString kitapdosyaisbn = booklist->GetItemText(item);
-	wxString kitapdosyayolu;
-	kitapdosyayolu << appLocation << wxT("files/") << kitapdosyaisbn;
-	if(wxFileExists(kitapdosyayolu))
+	wxString dosyakontrolcommand;
+	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << kitapdosyaisbn << wxT(".*");
+	wxArrayString output;
+	wxArrayString errors;
+	wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+	if(output.GetCount() > 0)
 	{
-		wxString openbookcommand;
-		openbookcommand << wxT("xdg-open '") << kitapdosyayolu << wxT("'");
-		wxExecute(openbookcommand);
+		if(wxFileExists(output.Item(0)))
+		{
+			wxString openfilecommand;
+			openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			wxExecute(openfilecommand);
+		}
+		else
+		{
+			wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu kitap ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
+			dial->ShowModal();
+		}
 	}
 	else
 	{
@@ -877,17 +868,23 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 		paperlist->SetItemColumnImage(item,1,wxAtoi(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+12)));
 		wxString makaledosyadoi = paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+0);
 		makaledosyadoi.Replace(wxT("/"),wxT("|"));
-		wxString makaledosyayolu;
-		makaledosyayolu << appLocation << wxT("files/") << makaledosyadoi;
-		if(wxFileExists(makaledosyayolu))
+		wxString dosyakontrolcommand;
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
+		wxArrayString output;
+		wxArrayString errors;
+		wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+		if(output.GetCount() > 0)
 		{
-			paperlist->SetItem(0,2,wxT(""));
-			paperlist->SetItemColumnImage(item,2,7);
-		}
-		else
-		{
-			paperlist->SetItem(0,2,makaledosyayolu);
-			paperlist->SetItemColumnImage(item,2,6);
+			if(wxFileExists(output.Item(0)))
+			{
+				paperlist->SetItem(0,2,wxT(""));
+				paperlist->SetItemColumnImage(item,2,7);
+			}
+			else
+			{
+				paperlist->SetItem(0,2,wxT(""));
+				paperlist->SetItemColumnImage(item,2,6);
+			}
 		}
 		paperlist->SetItem(0,3,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+1));
 		paperlist->SetItem(0,4,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+2));
@@ -1096,23 +1093,35 @@ void KaynakcaYonetimi::MakaleCiftTik(wxListEvent &event)
 	paperlist->GetItem(item);
 	wxString makaledosyadoi = paperlist->GetItemText(item);
 	makaledosyadoi.Replace(wxT("/"),wxT("|"));
-	wxString makaledosyayolu;
-	makaledosyayolu << appLocation << wxT("files/") << makaledosyadoi;// << wxT(".pdf");
-	if(wxFileExists(makaledosyayolu))
+	wxString dosyakontrolcommand;
+	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
+	wxArrayString output;
+	wxArrayString errors;
+	wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+	if(output.GetCount() > 0)
 	{
-		wxString openpapercommand;
-		openpapercommand << wxT("xdg-open '") << makaledosyayolu << wxT("'");
-		wxExecute(openpapercommand);
+		if(wxFileExists(output.Item(0)))
+		{
+			wxString openfilecommand;
+			openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			wxExecute(openfilecommand);
+		}
+		else
+		{
+			wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu makale ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
+			dial->ShowModal();
+		}
 	}
 	else
 	{
-		wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu makale ile ilişkili bir dosya bulunmuyor. \nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
+		wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu makale ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
 		dial->ShowModal();
 	}
 }
 void KaynakcaYonetimi::MakaleYeniDosya(const wxString& yenidosya)
 {
 	wxFileName* gelendosyaadi = new wxFileName(yenidosya);
+	wxString gelendosyauzanti = gelendosyaadi->GetExt();
 	wxString gelendosyadoi = gelendosyaadi->GetName();
 	gelendosyadoi.Replace(wxT("|"),wxT("/"));
 
@@ -1128,7 +1137,7 @@ void KaynakcaYonetimi::MakaleYeniDosya(const wxString& yenidosya)
 			eklemakale.Destroy();
 			bulunandoi.Replace(wxT("/"),wxT("|"));
 			wxString yenidosyayolu;
-			yenidosyayolu << appLocation << wxT("files/") << bulunandoi;
+			yenidosyayolu << appLocation << wxT("files/") << bulunandoi << wxT(".") << gelendosyauzanti;
 			wxCopyFile(yenidosya,yenidosyayolu);
 		}
 	}
@@ -1147,7 +1156,7 @@ void KaynakcaYonetimi::MakaleYeniDosya(const wxString& yenidosya)
 				wxString bulunandoi = buldoi.GetDOI();
 				bulunandoi.Replace(wxT("/"),wxT("|"));
 				wxString yenidosyayolu;
-				yenidosyayolu << appLocation << wxT("files/") << bulunandoi;
+				yenidosyayolu << appLocation << wxT("files/") << bulunandoi << wxT(".") << gelendosyauzanti;
 				wxCopyFile(yenidosya,yenidosyayolu);
 			}
 			buldoi.Destroy();
@@ -1249,7 +1258,7 @@ void KaynakcaYonetimi::DokumanlariYukle(const wxString& sorter,const wxString& q
 		documentlist->SetItem(0,1,wxT(""));
 		documentlist->SetItemColumnImage(item,1,wxAtoi(documentlistcevap.sonuc.Item(i*documentlistcevap.sutun+3)));
 		wxString dosyakontrolcommand;
-		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name doc.") << documentlistcevap.sonuc.Item(i*documentlistcevap.sutun+0) << wxT(".");
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name doc.") << documentlistcevap.sonuc.Item(i*documentlistcevap.sutun+0) << wxT(".*");
 		wxArrayString output;
 		wxArrayString errors;
 		wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
@@ -1377,7 +1386,7 @@ void KaynakcaYonetimi::DokumanCiftTik(wxListEvent &event)
 	documentlist->GetItem(item);
 	wxString dokumandosyaid = documentlist->GetItemText(item);
 	wxString dosyakontrolcommand;
-	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name doc.") << dokumandosyaid << wxT(".");
+	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name doc.") << dokumandosyaid << wxT(".*");
 	wxArrayString output;
 	wxArrayString errors;
 	wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
@@ -1394,6 +1403,11 @@ void KaynakcaYonetimi::DokumanCiftTik(wxListEvent &event)
 			wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu öğe ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
 			dial->ShowModal();
 		}
+	}
+	else
+	{
+		wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu öğe ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
+		dial->ShowModal();
 	}
 }
 void KaynakcaYonetimi::DokumanYeniDosya(const wxString& yenidosya)
@@ -1506,7 +1520,7 @@ void KaynakcaYonetimi::DosyalariYukle(const wxString& sorter,const wxString& que
 		filelist->SetItem(0,1,wxT(""));
 		filelist->SetItemColumnImage(item,1,wxAtoi(filelistcevap.sonuc.Item(i*filelistcevap.sutun+3)));
 		wxString dosyakontrolcommand;
-		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name file.") << filelistcevap.sonuc.Item(i*filelistcevap.sutun+0) << wxT(".");
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name file.") << filelistcevap.sonuc.Item(i*filelistcevap.sutun+0) << wxT(".*");
 		wxArrayString output;
 		wxArrayString errors;
 		wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
@@ -1634,7 +1648,7 @@ void KaynakcaYonetimi::DosyaCiftTik(wxListEvent &event)
 	filelist->GetItem(item);
 	wxString dosyadosyaid = filelist->GetItemText(item);
 	wxString dosyakontrolcommand;
-	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name file.") << dosyadosyaid << wxT(".");
+	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name file.") << dosyadosyaid << wxT(".*");
 	wxArrayString output;
 	wxArrayString errors;
 	wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
@@ -1651,6 +1665,11 @@ void KaynakcaYonetimi::DosyaCiftTik(wxListEvent &event)
 			wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu öğe ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
 			dial->ShowModal();
 		}
+	}
+	else
+	{
+		wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu öğe ile ilişkili bir dosya bulunmuyor.\nYeni dosya yüklemek için sağ tıklayın."),wxT("Dosya Bulunamadı"),wxOK);
+		dial->ShowModal();
 	}
 }
 void KaynakcaYonetimi::DosyaYeniDosya(const wxString& yenidosya)
