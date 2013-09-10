@@ -25,6 +25,7 @@
 
 #include <wx/wx.h>
 #include <wx/aboutdlg.h>
+#include <wx/app.h>
 #include <wx/arrstr.h>
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
@@ -75,10 +76,12 @@ const wxStandardPaths stdPath;
 
 #ifdef __APPLE__
 const wxString appLocation = wxT("");
+const wxString platform = wxT("apple");
 #endif
 
 #ifdef __LINUX__
 const wxString appLocation = wxFileName(stdPath.GetExecutablePath()).GetPath()+wxT("/");
+const wxString platform = wxT("linux");
 #endif
 
 struct vtcevap

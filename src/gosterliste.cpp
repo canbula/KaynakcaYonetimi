@@ -158,6 +158,10 @@ void GosterListe::ListeyiYukle()
 			showlistitemcevap = Vt(showlistitemsql);
 			showlist->SetItem(i,3,showlistitemcevap.sonuc.Item(1));
 			showlist->SetItem(i,4,showlistitemcevap.sonuc.Item(2));
+			if(showlistitemcevap.sonuc.Item(7)==wxT("Sarı")) showlist->SetItemBackgroundColour(item,wxColour(255,255,200));
+			if(showlistitemcevap.sonuc.Item(7)==wxT("Kırmızı")) showlist->SetItemBackgroundColour(item,wxColour(255,200,200));
+			if(showlistitemcevap.sonuc.Item(7)==wxT("Yeşil")) showlist->SetItemBackgroundColour(item,wxColour(200,255,200));
+			if(showlistitemcevap.sonuc.Item(7)==wxT("Mavi")) showlist->SetItemBackgroundColour(item,wxColour(200,200,255));
 		}
 		if(showlistcevap.sonuc.Item(i*showlistcevap.sutun+2) == wxT("paper"))
 		{
@@ -167,6 +171,10 @@ void GosterListe::ListeyiYukle()
 			showlistitemcevap = Vt(showlistitemsql);
 			showlist->SetItem(i,3,showlistitemcevap.sonuc.Item(1));
 			showlist->SetItem(i,4,showlistitemcevap.sonuc.Item(2));
+			if(showlistitemcevap.sonuc.Item(13)==wxT("Sarı")) showlist->SetItemBackgroundColour(item,wxColour(255,255,200));
+			if(showlistitemcevap.sonuc.Item(13)==wxT("Kırmızı")) showlist->SetItemBackgroundColour(item,wxColour(255,200,200));
+			if(showlistitemcevap.sonuc.Item(13)==wxT("Yeşil")) showlist->SetItemBackgroundColour(item,wxColour(200,255,200));
+			if(showlistitemcevap.sonuc.Item(13)==wxT("Mavi")) showlist->SetItemBackgroundColour(item,wxColour(200,200,255));
 		}
 	}
 	if(showlist->GetItemCount() > 0)
@@ -208,13 +216,33 @@ void GosterListe::OgeyeGozAt(wxListEvent &event)
 	showlist->GetItem(item);
 	wxString dosyaisbndoi = showlist->GetItemText(item);
 	dosyaisbndoi.Replace(wxT("/"),wxT("|"));
-	wxString ogedosyayolu;
-	ogedosyayolu << appLocation << wxT("files/") << dosyaisbndoi;
-	if(wxFileExists(ogedosyayolu))
+	wxString dosyakontrolcommand;
+	if(platform==wxT("linux"))
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << dosyaisbndoi << wxT(".*");
+	if(platform==wxT("apple"))
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name '") << dosyaisbndoi << wxT(".*'");
+	wxArrayString output;
+	wxArrayString errors;
+	wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+	if(output.GetCount() > 0)
 	{
-		wxString openitemfilecommand;
-		openitemfilecommand << wxT("xdg-open '") << ogedosyayolu << wxT("'");
-		wxExecute(openitemfilecommand);
+		if(wxFileExists(output.Item(0)))
+		{
+			wxString openfilecommand;
+			if(platform==wxT("linux"))
+				openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("apple"))
+			{
+				openfilecommand << wxT("open '") << output.Item(0) << wxT("'");
+				openfilecommand.Replace(wxT("//"),wxT("/"));
+			}
+			wxExecute(openfilecommand);
+		}
+		else
+		{
+			wxMessageDialog *dial = new wxMessageDialog(this,wxT("Sistemde bu öğe ile ilişkili bir dosya bulunmuyor."),wxT("Dosya Bulunamadı"),wxOK);
+			dial->ShowModal();
+		}
 	}
 	else
 	{

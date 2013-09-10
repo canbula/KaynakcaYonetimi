@@ -195,6 +195,14 @@ EkleKitap::EkleKitap(const wxString& title,const wxString& isbn)
 	bookstars.Add(wxT("5"));
 	bookstar = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),bookstars);
 	bottomhbox->Add(bookstar,0,wxEXPAND);
+	wxArrayString bookcolors;
+	bookcolors.Add(wxT("İşaretleme Yok"));
+	bookcolors.Add(wxT("Sarı"));
+	bookcolors.Add(wxT("Kırmızı"));
+	bookcolors.Add(wxT("Yeşil"));
+	bookcolors.Add(wxT("Mavi"));
+	bookcolor = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),bookcolors);
+	bottomhbox->Add(bookcolor,0,wxEXPAND);
 	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),1,wxEXPAND);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_CANCEL,cancelButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_OK,okButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
@@ -226,6 +234,7 @@ EkleKitap::EkleKitap(const wxString& title,const wxString& isbn)
 			booksubject->SetValue(isbncheck.sonuc.Item(4));
 			bookrefid->SetValue(isbncheck.sonuc.Item(5));
 			bookstar->SetStringSelection(isbncheck.sonuc.Item(6));
+			bookcolor->SetStringSelection(isbncheck.sonuc.Item(7));
 			EkleKitap::ISBNRetrieve(wxT("cover"));
 		}
 		else
@@ -329,7 +338,12 @@ void EkleKitap::SaveBook()
 	{
 		booksave.Add(bookstar->GetString(bookstar->GetSelection()));
 	}
-	VtEkleSilGuncelle(wxT("INSERT OR REPLACE INTO books VALUES (?,?,?,?,?,?,?);"),booksave);
+	if(bookcolor->GetSelection() == 0) booksave.Add(wxT(""));
+	if(bookcolor->GetSelection() == 1) booksave.Add(wxT("Sarı"));
+	if(bookcolor->GetSelection() == 2) booksave.Add(wxT("Kırmızı"));
+	if(bookcolor->GetSelection() == 3) booksave.Add(wxT("Yeşil"));
+	if(bookcolor->GetSelection() == 4) booksave.Add(wxT("Mavi"));
+	VtEkleSilGuncelle(wxT("INSERT OR REPLACE INTO books VALUES (?,?,?,?,?,?,?,?);"),booksave);
 	if(bookcov->GetValue())
 	{
 		wxString selectedbookcover;

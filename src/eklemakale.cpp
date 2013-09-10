@@ -187,7 +187,7 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	vbox->Add(new wxStaticText(subpanel,-1,wxT("")),1,wxEXPAND);
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
 	vbox->Add(-1,10);
-	
+
 	wxPanel *bottompanel = new wxPanel(subpanel,-1);
 	wxBoxSizer *bottomhbox = new wxBoxSizer(wxHORIZONTAL);
 	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT(" ")),0,wxEXPAND);
@@ -201,6 +201,14 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 	paperstars.Add(wxT("5"));
 	paperstar = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),paperstars);
 	bottomhbox->Add(paperstar,0,wxEXPAND);
+	wxArrayString papercolors;
+	papercolors.Add(wxT("İşaretleme Yok"));
+	papercolors.Add(wxT("Sarı"));
+	papercolors.Add(wxT("Kırmızı"));
+	papercolors.Add(wxT("Yeşil"));
+	papercolors.Add(wxT("Mavi"));
+	papercolor = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),papercolors);
+	bottomhbox->Add(papercolor,0,wxEXPAND);
 	bottomhbox->Add(new wxStaticText(bottompanel,-1,wxT("")),1,wxEXPAND);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_CANCEL,cancelButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
 	bottomhbox->Add(new wxBitmapButton(bottompanel,wxID_OK,okButton),0,wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
@@ -234,6 +242,7 @@ EkleMakale::EkleMakale(const wxString& title,const wxString& doi)
 			papersubject->SetValue(doicheck.sonuc.Item(10));
 			paperrefid->SetValue(doicheck.sonuc.Item(11));
 			paperstar->SetStringSelection(doicheck.sonuc.Item(12));
+			papercolor->SetStringSelection(doicheck.sonuc.Item(13));
 		}
 		else
 		{
@@ -279,7 +288,7 @@ void EkleMakale::SavePaper()
 {
 	wxSQLite3Database *papersaver = new wxSQLite3Database();
 	papersaver->Open(appLocation+wxT("db/Kaynakca.db"));
-	wxSQLite3Statement papersaversql = papersaver->PrepareStatement(wxT("INSERT OR REPLACE INTO papers VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);"));
+	wxSQLite3Statement papersaversql = papersaver->PrepareStatement(wxT("INSERT OR REPLACE INTO papers VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);"));
 	papersaversql.Bind(1,paperdoi->GetValue());
 	papersaversql.Bind(2,papertitle->GetValue());
 	papersaversql.Bind(3,paperauthors->GetValue());
@@ -300,6 +309,11 @@ void EkleMakale::SavePaper()
 	{
 		papersaversql.Bind(13,paperstar->GetString(paperstar->GetSelection()));
 	}
+	if(papercolor->GetSelection() == 0) papersaversql.Bind(14,wxT(""));
+	if(papercolor->GetSelection() == 1) papersaversql.Bind(14,wxT("Sarı"));
+	if(papercolor->GetSelection() == 2) papersaversql.Bind(14,wxT("Kırmızı"));
+	if(papercolor->GetSelection() == 3) papersaversql.Bind(14,wxT("Yeşil"));
+	if(papercolor->GetSelection() == 4) papersaversql.Bind(14,wxT("Mavi"));
 	papersaversql.ExecuteUpdate();
 	papersaversql.ClearBindings();
 	papersaversql.Reset();

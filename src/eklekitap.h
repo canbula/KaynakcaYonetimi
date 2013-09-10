@@ -38,6 +38,7 @@ public:
 	wxTextCtrl *bookrefid;
 	wxCheckBox *bookcov;
 	wxChoice *bookstar;
+	wxChoice *bookcolor;
 	wxSlider *bookcover;
 	wxBitmapButton *isbnCover_1;
 	wxBitmapButton *isbnCover_2;

@@ -256,11 +256,11 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	listhbox->Add(listlist,1,wxALIGN_CENTER|wxEXPAND);
 	middlesub5->SetSizer(listhbox);
 
-	middlenb->AddPage(middlesub1,wxT("Kitaplar"),false);
-	middlenb->AddPage(middlesub2,wxT("Makaleler"),true);
-	middlenb->AddPage(middlesub3,wxT("Dokümanlar"),false);
-	middlenb->AddPage(middlesub4,wxT("Dosyalar"),false);
-	middlenb->AddPage(middlesub5,wxT("Listeler"),false);
+	middlenb->InsertPage(0,middlesub1,wxT("Kitaplar"),false);
+	middlenb->InsertPage(1,middlesub2,wxT("Makaleler"),true);
+	middlenb->InsertPage(2,middlesub3,wxT("Dokümanlar"),false);
+	middlenb->InsertPage(3,middlesub4,wxT("Dosyalar"),false);
+	middlenb->InsertPage(4,middlesub5,wxT("Listeler"),false);
 	middlehbox->Add(middlenb,1,wxALIGN_LEFT|wxEXPAND);
 
 	wxStaticLine *middlehboxSEP = new wxStaticLine(middlepanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_VERTICAL);
@@ -374,6 +374,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	dropperlogo2->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::MakaleBirak), NULL, this);
 	dropperlogo3->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::DokumanBirak), NULL, this);
 	dropperlogo4->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::DosyaBirak), NULL, this);
+	//this->Connect(wxEVT_SIZE, wxSizeEventHandler(KaynakcaYonetimi::Boyutlandir), NULL, this);
 	//Connect(toolbarSearchBox->GetId(),wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(KaynakcaYonetimi::Arama));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
@@ -407,6 +408,15 @@ void KaynakcaYonetimi::Kapat(wxCommandEvent& WXUNUSED(event)) {Close(true);}
 void KaynakcaYonetimi::Arama(wxCommandEvent& WXUNUSED(event))
 {
 	//KaynakcaYonetimi::MakaleleriYukle(wxT(""));
+}
+void KaynakcaYonetimi::Boyutlandir(wxSizeEvent& WXUNUSED(event))
+{
+	KaynakcaYonetimi::Boyutla();
+}
+void KaynakcaYonetimi::Boyutla()
+{
+	wxMessageDialog sizerdial(this,wxT("Boyutlandırma Denemesi"),wxT("Boyutlar"),wxOK);
+	sizerdial.ShowModal();
 }
 /////////////////////////////////////////////////
 // Kitap ////////////////////////////////////////
@@ -486,6 +496,10 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 		wxListItem item;
 		item.SetId(0);
 		if(i%2==1) item.SetBackgroundColour(wxColour(245,245,255));
+		if(booklistcevap.sonuc.Item(i*booklistcevap.sutun+7)==wxT("Sarı")) item.SetBackgroundColour(wxColour(255,255,200));
+		if(booklistcevap.sonuc.Item(i*booklistcevap.sutun+7)==wxT("Kırmızı")) item.SetBackgroundColour(wxColour(255,200,200));
+		if(booklistcevap.sonuc.Item(i*booklistcevap.sutun+7)==wxT("Yeşil")) item.SetBackgroundColour(wxColour(200,255,200));
+		if(booklistcevap.sonuc.Item(i*booklistcevap.sutun+7)==wxT("Mavi")) item.SetBackgroundColour(wxColour(200,200,255));
 		int textcolorfromstar;
 		textcolorfromstar = 150-wxAtoi(booklistcevap.sonuc.Item(i*booklistcevap.sutun+6))*30;
 		item.SetTextColour(wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
@@ -494,6 +508,7 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 		booklist->SetItem(0,0,booklistcevap.sonuc.Item(i*booklistcevap.sutun+0));
 		booklist->SetItem(0,1,wxT(""));
 		booklist->SetItemColumnImage(item,1,wxAtoi(booklistcevap.sonuc.Item(i*booklistcevap.sutun+6)));
+		/*
 		wxString dosyakontrolcommand;
 		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".*");
 		wxArrayString output;
@@ -511,6 +526,23 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 				booklist->SetItem(0,2,wxT(""));
 				booklist->SetItemColumnImage(item,2,6);
 			}
+		}
+		*/
+		wxString dosyakontrolcommand1;
+		dosyakontrolcommand1 << appLocation << wxT("files/") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".pdf");
+		wxString dosyakontrolcommand2;
+		dosyakontrolcommand2 << appLocation << wxT("files/") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".djvu");
+		wxString dosyakontrolcommand3;
+		dosyakontrolcommand3 << appLocation << wxT("files/") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".djv");
+		if(wxFileExists(dosyakontrolcommand1) or wxFileExists(dosyakontrolcommand2) or wxFileExists(dosyakontrolcommand3))
+		{
+			booklist->SetItem(0,2,wxT(""));
+			booklist->SetItemColumnImage(item,2,7);
+		}
+		else
+		{
+			booklist->SetItem(0,2,wxT(""));
+			booklist->SetItemColumnImage(item,2,6);
 		}
 		booklist->SetItem(0,3,booklistcevap.sonuc.Item(i*booklistcevap.sutun+1));
 		booklist->SetItem(0,4,booklistcevap.sonuc.Item(i*booklistcevap.sutun+2));
@@ -532,17 +564,38 @@ void KaynakcaYonetimi::KitapSagTikList(wxCommandEvent &event)
 	booklist->GetItem(item);
 	if(event.GetId() < 7200)
 	{
-		wxArrayString starupdate;
-		wxString starstring;
-		starstring << event.GetId()-7190;
-		starupdate.Add(starstring);
-		starupdate.Add(booklist->GetItemText(item));
-		VtEkleSilGuncelle(wxT("UPDATE books SET star=? WHERE isbn=?"),starupdate);
-		int textcolorfromstar;
-		textcolorfromstar = 150-wxAtoi(starstring)*30;
-		booklist->SetItemColumnImage(item,1,wxAtoi(starstring));
-		//booklist->SetItem(booklist->GetFocusedItem(),1,starstring);
-		booklist->SetItemTextColour(item,wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
+		if(event.GetId() < 7190)
+		{
+			wxString colorstring;
+			if(event.GetId()==7180) colorstring = wxT("");
+			if(event.GetId()==7181) colorstring = wxT("Sarı");
+			if(event.GetId()==7182) colorstring = wxT("Kırmızı");
+			if(event.GetId()==7183) colorstring = wxT("Yeşil");
+			if(event.GetId()==7184) colorstring = wxT("Mavi");
+			wxArrayString colorupdate;
+			colorupdate.Add(colorstring);
+			colorupdate.Add(booklist->GetItemText(item));
+			VtEkleSilGuncelle(wxT("UPDATE books SET color=? WHERE isbn==?"),colorupdate);
+			if(colorstring==wxT("")) booklist->SetItemBackgroundColour(item,wxColour(245,245,255));
+			if(colorstring==wxT("Sarı")) booklist->SetItemBackgroundColour(item,wxColour(255,255,200));
+			if(colorstring==wxT("Kırmızı")) booklist->SetItemBackgroundColour(item,wxColour(255,200,200));
+			if(colorstring==wxT("Yeşil")) booklist->SetItemBackgroundColour(item,wxColour(200,255,200));
+			if(colorstring==wxT("Mavi")) booklist->SetItemBackgroundColour(item,wxColour(200,200,255));
+		}
+		else
+		{
+			wxArrayString starupdate;
+			wxString starstring;
+			starstring << event.GetId()-7190;
+			starupdate.Add(starstring);
+			starupdate.Add(booklist->GetItemText(item));
+			VtEkleSilGuncelle(wxT("UPDATE books SET star=? WHERE isbn=?"),starupdate);
+			int textcolorfromstar;
+			textcolorfromstar = 150-wxAtoi(starstring)*30;
+			booklist->SetItem(booklist->GetFocusedItem(),1,wxT(""));
+			booklist->SetItemColumnImage(item,1,wxAtoi(starstring));
+			booklist->SetItemTextColour(item,wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
+		}
 	}
 	else
 	{
@@ -615,10 +668,13 @@ void KaynakcaYonetimi::KitapSagTikTik(wxCommandEvent &event)
 			if(uploadfileforbook->ShowModal() == wxID_OK)
 			{
 				wxString uploadedfileforbook = uploadfileforbook->GetPath();
+				wxFileName* uploadedfileforbookname = new wxFileName(uploadfileforbook->GetPath());
+				wxString uploadedfileforbookext = uploadedfileforbookname->GetExt();
 				wxString uploadedfileisbn = booklist->GetItemText(item);
 				wxString uploadedfilepath;
-				uploadedfilepath << appLocation << wxT("files/") << uploadedfileisbn;
+				uploadedfilepath << appLocation << wxT("files/") << uploadedfileisbn << wxT(".") << uploadedfileforbookext;
 				wxCopyFile(uploadedfileforbook,uploadedfilepath);
+				booklist->SetItemColumnImage(item,2,7);
 			}
 		}
 		break;
@@ -644,6 +700,12 @@ void KaynakcaYonetimi::KitapSagTik(wxListEvent &event)
 	vtcevap kitapsagtikcevap;
 	kitapsagtikcevap = Vt(kitapsagtiksql);
 	int kitapsagtikstarid = 7190 + wxAtoi(kitapsagtikcevap.sonuc.Item(6));
+	int kitapsagtikcolorid;
+	if(kitapsagtikcevap.sonuc.Item(7)==wxT("")) kitapsagtikcolorid = 7180;
+	if(kitapsagtikcevap.sonuc.Item(7)==wxT("Sarı")) kitapsagtikcolorid = 7181;
+	if(kitapsagtikcevap.sonuc.Item(7)==wxT("Kırmızı")) kitapsagtikcolorid = 7182;
+	if(kitapsagtikcevap.sonuc.Item(7)==wxT("Yeşil")) kitapsagtikcolorid = 7183;
+	if(kitapsagtikcevap.sonuc.Item(7)==wxT("Mavi")) kitapsagtikcolorid = 7184;
 	wxMenu kitapsagtikmenu;
 	kitapsagtikmenu.SetClientData(data);
 	kitapsagtikmenu.Append(ID_BOOKRCMENU_EDIT,wxT("Düzenle"));
@@ -686,6 +748,16 @@ void KaynakcaYonetimi::KitapSagTik(wxListEvent &event)
 	kitapsagtiksubmenu2->Check(kitapsagtikstarid,TRUE);
 	Connect(7190, 7195, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::KitapSagTikList, NULL, this);
 	kitapsagtikmenu.Append(-1,wxT("Beğeni"), kitapsagtiksubmenu2);
+	kitapsagtikmenu.AppendSeparator();
+	wxMenu *kitapsagtiksubmenu3 = new wxMenu;
+	kitapsagtiksubmenu3->AppendCheckItem(7180,wxT("İşaretleme Yok"));
+	kitapsagtiksubmenu3->AppendCheckItem(7181,wxT("Sarı"));
+	kitapsagtiksubmenu3->AppendCheckItem(7182,wxT("Kırmızı"));
+	kitapsagtiksubmenu3->AppendCheckItem(7183,wxT("Yeşil"));
+	kitapsagtiksubmenu3->AppendCheckItem(7184,wxT("Mavi"));
+	kitapsagtiksubmenu3->Check(kitapsagtikcolorid,TRUE);
+	Connect(7180, 7184, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::KitapSagTikList, NULL, this);
+	kitapsagtikmenu.Append(-1,wxT("İşaretle"), kitapsagtiksubmenu3);
 	kitapsagtikmenu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::KitapSagTikTik, NULL, this);
 	PopupMenu(&kitapsagtikmenu);
 }
@@ -707,7 +779,13 @@ void KaynakcaYonetimi::KitapCiftTik(wxListEvent &event)
 		if(wxFileExists(output.Item(0)))
 		{
 			wxString openfilecommand;
-			openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("linux"))
+				openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("apple"))
+			{
+				openfilecommand << wxT("open '") << output.Item(0) << wxT("'");
+				openfilecommand.Replace(wxT("//"),wxT("/"));
+			}
 			wxExecute(openfilecommand);
 		}
 		else
@@ -725,6 +803,7 @@ void KaynakcaYonetimi::KitapCiftTik(wxListEvent &event)
 void KaynakcaYonetimi::KitapYeniDosya(const wxString& yenidosya)
 {
 	wxFileName* gelendosyaadi = new wxFileName(yenidosya);
+	wxString gelendosyauzanti = gelendosyaadi->GetExt();
 	wxString gelendosyaisbn = gelendosyaadi->GetName();
 
 	wxRegEx* reISBN = new wxRegEx(wxT("((\\d{9}|\\d{12})[\\d|X])"),1);
@@ -733,12 +812,12 @@ void KaynakcaYonetimi::KitapYeniDosya(const wxString& yenidosya)
 		wxString bulunanisbn = reISBN->GetMatch(gelendosyaisbn);
 		EkleKitap eklekitap(wxT("Yeni Kitap Ekle"),bulunanisbn);
 		if(eklekitap.ShowModal() == wxID_OK) {
+			wxString yenidosyayolu;
+			yenidosyayolu << appLocation << wxT("files/") << bulunanisbn << wxT(".") << gelendosyauzanti;
+			wxCopyFile(yenidosya,yenidosyayolu);
 			eklekitap.SaveBook();
 			KaynakcaYonetimi::KitaplariYukle(wxT(""));
 			eklekitap.Destroy();
-			wxString yenidosyayolu;
-			yenidosyayolu << appLocation << wxT("files/") << bulunanisbn;
-			wxCopyFile(yenidosya,yenidosyayolu);
 		}
 	}
 	else
@@ -747,13 +826,13 @@ void KaynakcaYonetimi::KitapYeniDosya(const wxString& yenidosya)
 		if(bulisbn.ShowModal() == wxID_OK) {
 			EkleKitap eklekitap(wxT("Yeni Kitap Ekle"),bulisbn.GetISBN());
 			if(eklekitap.ShowModal() == wxID_OK) {
+				wxString bulunanisbn = bulisbn.GetISBN();
+				wxString yenidosyayolu;
+				yenidosyayolu << appLocation << wxT("files/") << bulunanisbn << wxT(".") << gelendosyauzanti;
+				wxCopyFile(yenidosya,yenidosyayolu);
 				eklekitap.SaveBook();
 				KaynakcaYonetimi::KitaplariYukle(wxT(""));
 				eklekitap.Destroy();
-				wxString bulunanisbn = bulisbn.GetISBN();
-				wxString yenidosyayolu;
-				yenidosyayolu << appLocation << wxT("files/") << bulunanisbn;
-				wxCopyFile(yenidosya,yenidosyayolu);
 			}
 			bulisbn.Destroy();
 		}
@@ -859,6 +938,10 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 		wxListItem item;
 		item.SetId(0);
 		if(i%2==1) item.SetBackgroundColour(wxColour(245,245,255));
+		if(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+13)==wxT("Sarı")) item.SetBackgroundColour(wxColour(255,255,200));
+		if(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+13)==wxT("Kırmızı")) item.SetBackgroundColour(wxColour(255,200,200));
+		if(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+13)==wxT("Yeşil")) item.SetBackgroundColour(wxColour(200,255,200));
+		if(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+13)==wxT("Mavi")) item.SetBackgroundColour(wxColour(200,200,255));
 		int textcolorfromstar;
 		textcolorfromstar = 150-wxAtoi(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+12))*30;
 		item.SetTextColour(wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
@@ -868,32 +951,46 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 		paperlist->SetItemColumnImage(item,1,wxAtoi(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+12)));
 		wxString makaledosyadoi = paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+0);
 		makaledosyadoi.Replace(wxT("/"),wxT("|"));
+		// Bu kontrol programı yavaşlattiği için kapatıldı
+		//wxString dosyakontrolcommand;
+		//dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
+		//wxArrayString output;
+		//wxArrayString errors;
+		//wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+		//if(output.GetCount() > 0)
+		//{
+		//	if(wxFileExists(output.Item(0)))
+		//	{
+		//		paperlist->SetItem(0,2,wxT(""));
+		//		paperlist->SetItemColumnImage(item,2,7);
+		//	}
+		//	else
+		//	{
+		//		paperlist->SetItem(0,2,wxT(""));
+		//		paperlist->SetItemColumnImage(item,2,6);
+		//	}
+		//}
+		// Bu kontrol daha hızli
 		wxString dosyakontrolcommand;
-		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
-		wxArrayString output;
-		wxArrayString errors;
-		wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
-		if(output.GetCount() > 0)
+		dosyakontrolcommand << appLocation << wxT("files/") << makaledosyadoi << wxT(".pdf");
+		if(wxFileExists(dosyakontrolcommand))
 		{
-			if(wxFileExists(output.Item(0)))
-			{
-				paperlist->SetItem(0,2,wxT(""));
-				paperlist->SetItemColumnImage(item,2,7);
-			}
-			else
-			{
-				paperlist->SetItem(0,2,wxT(""));
-				paperlist->SetItemColumnImage(item,2,6);
-			}
+			paperlist->SetItem(0,2,wxT(""));
+			paperlist->SetItemColumnImage(item,2,7);
+		}
+		else
+		{
+			paperlist->SetItem(0,2,wxT(""));
+			paperlist->SetItemColumnImage(item,2,6);
 		}
 		paperlist->SetItem(0,3,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+1));
 		paperlist->SetItem(0,4,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+2));
 		paperlist->SetItem(0,5,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+3));
-		paperlist->SetItem(0,6,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+4));
-		paperlist->SetItem(0,7,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+5));
-		paperlist->SetItem(0,8,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+6));
-		paperlist->SetItem(0,9,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+7));
-		paperlist->SetItem(0,10,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+8));
+		paperlist->SetItem(0,6,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+8));
+		paperlist->SetItem(0,7,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+4));
+		paperlist->SetItem(0,8,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+5));
+		paperlist->SetItem(0,9,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+6));
+		paperlist->SetItem(0,10,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+7));
 		paperlist->SetItem(0,11,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+9));
 		paperlist->SetItem(0,12,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+10));
 		paperlist->SetItem(0,13,paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+11));
@@ -912,37 +1009,49 @@ void KaynakcaYonetimi::MakaleSagTikList(wxCommandEvent &event)
 	paperlist->GetItem(item);
 	if(event.GetId() < 7200)
 	{
-		wxString starstring;
-		starstring << event.GetId()-7190;
-		wxSQLite3Database *starupdater = new wxSQLite3Database();
-		starupdater->Open(appLocation+wxT("db/Kaynakca.db"));
-		wxSQLite3Statement starupdatersql = starupdater->PrepareStatement(wxT("UPDATE papers SET star=? WHERE doi=?"));
-		starupdatersql.Bind(1,starstring);
-		starupdatersql.Bind(2,paperlist->GetItemText(item));
-		starupdatersql.ExecuteUpdate();
-		starupdatersql.ClearBindings();
-		starupdatersql.Reset();
-		starupdater->Close();
-		delete starupdater;
-		int textcolorfromstar;
-		textcolorfromstar = 150-wxAtoi(starstring)*30;
-		paperlist->SetItem(paperlist->GetFocusedItem(),1,starstring);
-		paperlist->SetItemTextColour(item,wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
+		if(event.GetId() < 7190)
+		{
+			wxString colorstring;
+			if(event.GetId()==7180) colorstring = wxT("");
+			if(event.GetId()==7181) colorstring = wxT("Sarı");
+			if(event.GetId()==7182) colorstring = wxT("Kırmızı");
+			if(event.GetId()==7183) colorstring = wxT("Yeşil");
+			if(event.GetId()==7184) colorstring = wxT("Mavi");
+			wxArrayString colorupdate;
+			colorupdate.Add(colorstring);
+			colorupdate.Add(paperlist->GetItemText(item));
+			VtEkleSilGuncelle(wxT("UPDATE papers SET color=? WHERE doi==?"),colorupdate);
+			if(colorstring==wxT("")) paperlist->SetItemBackgroundColour(item,wxColour(245,245,255));
+			if(colorstring==wxT("Sarı")) paperlist->SetItemBackgroundColour(item,wxColour(255,255,200));
+			if(colorstring==wxT("Kırmızı")) paperlist->SetItemBackgroundColour(item,wxColour(255,200,200));
+			if(colorstring==wxT("Yeşil")) paperlist->SetItemBackgroundColour(item,wxColour(200,255,200));
+			if(colorstring==wxT("Mavi")) paperlist->SetItemBackgroundColour(item,wxColour(200,200,255));
+		}
+		else
+		{
+			wxArrayString starupdate;
+			wxString starstring;
+			starstring << event.GetId()-7190;
+			starupdate.Add(starstring);
+			starupdate.Add(paperlist->GetItemText(item));
+			VtEkleSilGuncelle(wxT("UPDATE papers SET star=? WHERE doi=?"),starupdate);
+			int textcolorfromstar;
+			textcolorfromstar = 150-wxAtoi(starstring)*30;
+			paperlist->SetItem(paperlist->GetFocusedItem(),1,wxT(""));
+			paperlist->SetItemColumnImage(item,1,wxAtoi(starstring));
+			paperlist->SetItemTextColour(item,wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
+		}
 	}
 	else
 	{
 		if(event.GetId() > 8200)
 		{
-			wxSQLite3Database *listrefremover = new wxSQLite3Database();
-			listrefremover->Open(appLocation+wxT("db/Kaynakca.db"));
-			wxSQLite3Statement listrefremoversql = listrefremover->PrepareStatement(wxT("DELETE FROM listrefs WHERE listid==? AND isbndoi==?"));
-			listrefremoversql.Bind(1,event.GetId()-8200);
-			listrefremoversql.Bind(2,paperlist->GetItemText(item));
-			listrefremoversql.ExecuteUpdate();
-			listrefremoversql.ClearBindings();
-			listrefremoversql.Reset();
-			listrefremover->Close();
-			delete listrefremover;
+			wxArrayString listrefremove;
+			wxString idstring;
+			idstring << event.GetId()-8200;
+			listrefremove.Add(idstring);
+			listrefremove.Add(paperlist->GetItemText(item));
+			VtEkleSilGuncelle(wxT("DELETE FROM listrefs WHERE listid==? AND isbndoi==?"),listrefremove);
 		}
 		else
 		{
@@ -1004,11 +1113,14 @@ void KaynakcaYonetimi::MakaleSagTikTik(wxCommandEvent &event)
 			if(uploadfileforpaper->ShowModal() == wxID_OK)
 			{
 				wxString uploadedfileforpaper = uploadfileforpaper->GetPath();
+				wxFileName* uploadedfileforpapername = new wxFileName(uploadfileforpaper->GetPath());
+				wxString uploadedfileforpaperext = uploadedfileforpapername->GetExt();
 				wxString uploadedfiledoi = paperlist->GetItemText(item);
 				uploadedfiledoi.Replace(wxT("/"),wxT("|"));
 				wxString uploadedfilepath;
-				uploadedfilepath << appLocation << wxT("files/") << uploadedfiledoi;
+				uploadedfilepath << appLocation << wxT("files/") << uploadedfiledoi << wxT(".") << uploadedfileforpaperext;
 				wxCopyFile(uploadedfileforpaper,uploadedfilepath);
+				paperlist->SetItemColumnImage(item,2,7);
 			}
 		}
 		break;
@@ -1029,15 +1141,17 @@ void KaynakcaYonetimi::MakaleSagTik(wxListEvent &event)
 	item.SetColumn(0);
 	paperlist->GetItem(item);
 	
-	wxSQLite3Database *makalesagtikpaperretriever = new wxSQLite3Database();
-	makalesagtikpaperretriever->Open(appLocation+wxT("db/Kaynakca.db"));
-	wxString makalesagtikpaperretrieversql;
-	makalesagtikpaperretrieversql << wxT("SELECT * FROM papers WHERE doi == '") << paperlist->GetItemText(item) << wxT("';");
-	wxSQLite3ResultSet makalesagtikpaperretrieveSet = makalesagtikpaperretriever->ExecuteQuery(makalesagtikpaperretrieversql); 
-	int makalesagtikstarid = 7190 + wxAtoi(makalesagtikpaperretrieveSet.GetAsString(wxT("star")));
-	makalesagtikpaperretrieveSet.Finalize();
-	makalesagtikpaperretriever->Close();
-	delete makalesagtikpaperretriever;
+	wxString makalesagtiksql;
+	makalesagtiksql << wxT("SELECT * FROM papers WHERE doi == '") << paperlist->GetItemText(item) << wxT("';");
+	vtcevap makalesagtikcevap;
+	makalesagtikcevap = Vt(makalesagtiksql); 
+	int makalesagtikstarid = 7190 + wxAtoi(makalesagtikcevap.sonuc.Item(12));
+	int makalesagtikcolorid;
+	if(makalesagtikcevap.sonuc.Item(13)==wxT("")) makalesagtikcolorid = 7180;
+	if(makalesagtikcevap.sonuc.Item(13)==wxT("Sarı")) makalesagtikcolorid = 7181;
+	if(makalesagtikcevap.sonuc.Item(13)==wxT("Kırmızı")) makalesagtikcolorid = 7182;
+	if(makalesagtikcevap.sonuc.Item(13)==wxT("Yeşil")) makalesagtikcolorid = 7183;
+	if(makalesagtikcevap.sonuc.Item(13)==wxT("Mavi")) makalesagtikcolorid = 7184;
 	wxMenu makalesagtikmenu;
 	makalesagtikmenu.SetClientData(data);
 	makalesagtikmenu.Append(ID_PAPERRCMENU_EDIT,wxT("Düzenle"));
@@ -1048,27 +1162,26 @@ void KaynakcaYonetimi::MakaleSagTik(wxListEvent &event)
 	makalesagtikmenu.Append(ID_PAPERRCMENU_WWW,wxT("Web'de Görüntüle"));
 	makalesagtikmenu.AppendSeparator();
 	wxMenu *makalesagtiksubmenu1 = new wxMenu;
-	wxSQLite3Database *makalesagtiklistretriever = new wxSQLite3Database();
-	makalesagtiklistretriever->Open(appLocation+wxT("db/Kaynakca.db"));
-	wxSQLite3ResultSet makalesagtiklistretrieveSet = makalesagtiklistretriever->ExecuteQuery(wxT("SELECT * FROM lists ORDER BY id DESC"));
-	while(makalesagtiklistretrieveSet.NextRow())
+	vtcevap makalesagtiklistcevap;
+	makalesagtiklistcevap = Vt(wxT("SELECT * FROM lists ORDER BY id DESC"));
+	for(int i=0;i<makalesagtiklistcevap.satir;i++)
 	{
 		wxString makalesagtiklistrefsql;
-		makalesagtiklistrefsql << wxT("SELECT * FROM listrefs WHERE listid == '") << makalesagtiklistretrieveSet.GetAsString(wxT("id")) << wxT("' AND isbndoi=='") << paperlist->GetItemText(item) << wxT("';");
-		wxSQLite3ResultSet makalesagtiklistrefSet = makalesagtiklistretriever->ExecuteQuery(makalesagtiklistrefsql);
+		makalesagtiklistrefsql << wxT("SELECT * FROM listrefs WHERE listid == '") << makalesagtiklistcevap.sonuc.Item(i*makalesagtiklistcevap.sutun+0) << wxT("' AND isbndoi=='") << paperlist->GetItemText(item) << wxT("';");
+		vtcevap makalesagtiklistref;
+		makalesagtiklistref = Vt(makalesagtiklistrefsql);
 		int makalesagtiklistrefid = 7200;
-		if(makalesagtiklistretrieveSet.GetAsString(wxT("id"))==makalesagtiklistrefSet.GetAsString(wxT("listid")))
-			makalesagtiklistrefid = 8200;
-		makalesagtiklistrefSet.Finalize();
-		int makalesagtiklistid = makalesagtiklistrefid + wxAtoi(makalesagtiklistretrieveSet.GetAsString(wxT("id")));
-		makalesagtiksubmenu1->AppendCheckItem(makalesagtiklistid,makalesagtiklistretrieveSet.GetAsString(wxT("name")));
+		if(makalesagtiklistref.satir>0)
+		{
+			if(makalesagtiklistcevap.sonuc.Item(i*makalesagtiklistcevap.sutun+0)==makalesagtiklistref.sonuc.Item(0))
+				makalesagtiklistrefid = 8200;
+		}
+		int makalesagtiklistid = makalesagtiklistrefid + wxAtoi(makalesagtiklistcevap.sonuc.Item(i*makalesagtiklistcevap.sutun+0));
+		makalesagtiksubmenu1->AppendCheckItem(makalesagtiklistid,makalesagtiklistcevap.sonuc.Item(i*makalesagtiklistcevap.sutun+1));
 		if(makalesagtiklistid > 8200)
 			makalesagtiksubmenu1->Check(makalesagtiklistid,TRUE);
 		Connect(makalesagtiklistid, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::MakaleSagTikList, NULL, this);
 	}
-	makalesagtiklistretrieveSet.Finalize();
-	makalesagtiklistretriever->Close();
-	delete makalesagtiklistretriever;
 	makalesagtikmenu.Append(-1,wxT("Listeler"), makalesagtiksubmenu1);
 	makalesagtikmenu.AppendSeparator();
 	wxMenu *makalesagtiksubmenu2 = new wxMenu;
@@ -1081,6 +1194,16 @@ void KaynakcaYonetimi::MakaleSagTik(wxListEvent &event)
 	makalesagtiksubmenu2->Check(makalesagtikstarid,TRUE);
 	Connect(7190, 7195, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::MakaleSagTikList, NULL, this);
 	makalesagtikmenu.Append(-1,wxT("Beğeni"), makalesagtiksubmenu2);
+	makalesagtikmenu.AppendSeparator();
+	wxMenu *makalesagtiksubmenu3 = new wxMenu;
+	makalesagtiksubmenu3->AppendCheckItem(7180,wxT("İşaretleme Yok"));
+	makalesagtiksubmenu3->AppendCheckItem(7181,wxT("Sarı"));
+	makalesagtiksubmenu3->AppendCheckItem(7182,wxT("Kırmızı"));
+	makalesagtiksubmenu3->AppendCheckItem(7183,wxT("Yeşil"));
+	makalesagtiksubmenu3->AppendCheckItem(7184,wxT("Mavi"));
+	makalesagtiksubmenu3->Check(makalesagtikcolorid,TRUE);
+	Connect(7180, 7184, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::MakaleSagTikList, NULL, this);
+	makalesagtikmenu.Append(-1,wxT("İşaretle"), makalesagtiksubmenu3);
 	makalesagtikmenu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::MakaleSagTikTik, NULL, this);
 	PopupMenu(&makalesagtikmenu);
 }
@@ -1094,7 +1217,10 @@ void KaynakcaYonetimi::MakaleCiftTik(wxListEvent &event)
 	wxString makaledosyadoi = paperlist->GetItemText(item);
 	makaledosyadoi.Replace(wxT("/"),wxT("|"));
 	wxString dosyakontrolcommand;
-	dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
+	if(platform==wxT("linux"))
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
+	if(platform==wxT("apple"))
+		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name '") << makaledosyadoi << wxT(".*'");
 	wxArrayString output;
 	wxArrayString errors;
 	wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
@@ -1103,7 +1229,13 @@ void KaynakcaYonetimi::MakaleCiftTik(wxListEvent &event)
 		if(wxFileExists(output.Item(0)))
 		{
 			wxString openfilecommand;
-			openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("linux"))
+				openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("apple"))
+			{
+				openfilecommand << wxT("open '") << output.Item(0) << wxT("'");
+				openfilecommand.Replace(wxT("//"),wxT("/"));
+			}
 			wxExecute(openfilecommand);
 		}
 		else
@@ -1132,13 +1264,13 @@ void KaynakcaYonetimi::MakaleYeniDosya(const wxString& yenidosya)
 		wxString bulunandoi = reDOI->GetMatch(gelendosyadoi);
 		EkleMakale eklemakale(wxT("Yeni Makale Ekle"),bulunandoi);
 		if(eklemakale.ShowModal() == wxID_OK) {
-			eklemakale.SavePaper();
-			KaynakcaYonetimi::MakaleleriYukle(wxT(""));
-			eklemakale.Destroy();
 			bulunandoi.Replace(wxT("/"),wxT("|"));
 			wxString yenidosyayolu;
 			yenidosyayolu << appLocation << wxT("files/") << bulunandoi << wxT(".") << gelendosyauzanti;
 			wxCopyFile(yenidosya,yenidosyayolu);
+			eklemakale.SavePaper();
+			KaynakcaYonetimi::MakaleleriYukle(wxT(""));
+			eklemakale.Destroy();
 		}
 	}
 	else
@@ -1150,14 +1282,14 @@ void KaynakcaYonetimi::MakaleYeniDosya(const wxString& yenidosya)
 		if(buldoi.ShowModal() == wxID_OK) {
 			EkleMakale eklemakale(wxT("Yeni Makale Ekle"),buldoi.GetDOI());
 			if(eklemakale.ShowModal() == wxID_OK) {
-				eklemakale.SavePaper();
-				KaynakcaYonetimi::MakaleleriYukle(wxT(""));
-				eklemakale.Destroy();
 				wxString bulunandoi = buldoi.GetDOI();
 				bulunandoi.Replace(wxT("/"),wxT("|"));
 				wxString yenidosyayolu;
 				yenidosyayolu << appLocation << wxT("files/") << bulunandoi << wxT(".") << gelendosyauzanti;
 				wxCopyFile(yenidosya,yenidosyayolu);
+				eklemakale.SavePaper();
+				KaynakcaYonetimi::MakaleleriYukle(wxT(""));
+				eklemakale.Destroy();
 			}
 			buldoi.Destroy();
 		}
@@ -1325,6 +1457,7 @@ void KaynakcaYonetimi::DokumanSagTikTik(wxCommandEvent &event)
 				wxString uploadedfilepath;
 				uploadedfilepath << appLocation << wxT("files/doc.") << uploadedfileid << wxT(".") << uploadedfileext;
 				wxCopyFile(uploadedfilefordocument,uploadedfilepath);
+				documentlist->SetItemColumnImage(item,2,7);
 			}
 		}
 		break;
@@ -1395,7 +1528,13 @@ void KaynakcaYonetimi::DokumanCiftTik(wxListEvent &event)
 		if(wxFileExists(output.Item(0)))
 		{
 			wxString openfilecommand;
-			openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("linux"))
+				openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("apple"))
+			{
+				openfilecommand << wxT("open '") << output.Item(0) << wxT("'");
+				openfilecommand.Replace(wxT("//"),wxT("/"));
+			}
 			wxExecute(openfilecommand);
 		}
 		else
@@ -1417,11 +1556,11 @@ void KaynakcaYonetimi::DokumanYeniDosya(const wxString& yenidosya)
 	EkleDokuman ekledokuman(wxT("Yeni Dosya Ekle"),wxT(""));
 	if(ekledokuman.ShowModal() == wxID_OK) {
 		ekledokuman.SaveDocument();
-		KaynakcaYonetimi::DokumanlariYukle(wxT(""));
 		wxString eklenenid = ekledokuman.GetID();
 		wxString yenidosyayolu;
 		yenidosyayolu << appLocation << wxT("files/doc.") << eklenenid << wxT(".") << gelendosyauzanti;
 		wxCopyFile(yenidosya,yenidosyayolu);
+		KaynakcaYonetimi::DokumanlariYukle(wxT(""));
 		ekledokuman.Destroy();
 	}
 }
@@ -1587,6 +1726,7 @@ void KaynakcaYonetimi::DosyaSagTikTik(wxCommandEvent &event)
 				wxString uploadedfilepath;
 				uploadedfilepath << appLocation << wxT("files/") << uploadedfileid << wxT(".") << uploadedfileext;
 				wxCopyFile(uploadedfileforfile,uploadedfilepath);
+				filelist->SetItemColumnImage(item,2,7);
 			}
 		}
 		break;
@@ -1657,7 +1797,13 @@ void KaynakcaYonetimi::DosyaCiftTik(wxListEvent &event)
 		if(wxFileExists(output.Item(0)))
 		{
 			wxString openfilecommand;
-			openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("linux"))
+				openfilecommand << wxT("xdg-open '") << output.Item(0) << wxT("'");
+			if(platform==wxT("apple"))
+			{
+				openfilecommand << wxT("open '") << output.Item(0) << wxT("'");
+				openfilecommand.Replace(wxT("//"),wxT("/"));
+			}
 			wxExecute(openfilecommand);
 		}
 		else
@@ -1679,11 +1825,11 @@ void KaynakcaYonetimi::DosyaYeniDosya(const wxString& yenidosya)
 	EkleDosya ekledosya(wxT("Yeni Dosya Ekle"),wxT(""));
 	if(ekledosya.ShowModal() == wxID_OK) {
 		ekledosya.SaveFile();
-		KaynakcaYonetimi::DosyalariYukle(wxT(""));
 		wxString eklenenid = ekledosya.GetID();
 		wxString yenidosyayolu;
 		yenidosyayolu << appLocation << wxT("files/file.") << eklenenid << wxT(".") << gelendosyauzanti;
 		wxCopyFile(yenidosya,yenidosyayolu);
+		KaynakcaYonetimi::DosyalariYukle(wxT(""));
 		ekledosya.Destroy();
 	}
 }

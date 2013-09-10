@@ -39,6 +39,7 @@ public:
 	wxTextCtrl *papersubject;
 	wxTextCtrl *paperrefid;
 	wxChoice *paperstar;
+	wxChoice *papercolor;
 };
 
 const int ADDPAPER_DIALOG_RETRIEVE = 2201;

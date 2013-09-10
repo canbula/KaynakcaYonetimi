@@ -66,7 +66,8 @@ public:
 	void Kapat(wxCommandEvent& event);
 	void Hakkinda(wxCommandEvent& event);
 	void Arama(wxCommandEvent& event);
-	wxSearchCtrl* toolbarSearchBox;
+	void Boyutlandir(wxSizeEvent& event);
+	void Boyutla();
 	wxNotebook* middlenb;
 	
 	// Kitap
