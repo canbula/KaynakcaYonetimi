@@ -31,7 +31,6 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(960,700))//,wxDEFAULT_FRAME_STYLE & ~ (wxRESIZE_BORDER|wxMAXIMIZE_BOX))
 {
 	wxSize mainSize = this->GetSize();
-	// Burayi wxEVT_SIZE ile kontrol altinda tutmak gerekecek.
 
 	wxImage::AddHandler(new wxPNGHandler);
 	wxBitmap toolbarLibrary(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
@@ -51,6 +50,9 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	wxBitmap iconArticle(appLocation+wxT("resource/icons/contract2.png"),wxBITMAP_TYPE_PNG);
 	wxBitmap iconDocument(appLocation+wxT("resource/icons/document1.png"),wxBITMAP_TYPE_PNG);
 	wxBitmap iconFile(appLocation+wxT("resource/icons/file.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap searchButton(appLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap okButton(appLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap cancelButton(appLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
 	
 	
 	wxMenuBar *menubar = new wxMenuBar;
@@ -76,13 +78,6 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	tool->Append(ID_TOOLMENU_FINDDOI,wxT("DOI Bul\tCtrl+D"));
 	tool->Append(ID_TOOLMENU_SEARCH,wxT("Arama Yap\tCtrl+F"));
 	menubar->Append(tool,wxT("Araçlar"));
-	//help = new wxMenu;
-	//help->Append(ID_HELPMENU_ABOUT,wxT("Hakkında"));
-	//menubar->Append(help,wxT("Yardım"));
-	//wxMenuItem *helpItem = new wxMenuItem(help,wxID_ABOUT,wxT("Hakkında"));
-	//helpItem->SetBitmap(toolbarAbout);
-	//help->Append(helpItem);
-	//menubar->Append(help,wxT("Yardım"));
 	wxMenu *help = new wxMenu;
 	help->Append(wxID_HELP,wxT("Yardım"));
 	help->AppendSeparator();
@@ -94,7 +89,6 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	this->SetStatusBar(statusbar);
 	statusbar->SetStatusText(wxT("Kaynakça Yönetimi - Pardus Yazılım Kampı 2013"));
 
-	////////////////////////////
 	wxPanel *mainpanel = new wxPanel(this,-1);
 	wxBoxSizer *mainvbox = new wxBoxSizer(wxVERTICAL);
 	
@@ -131,10 +125,10 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	middlenb = new wxNotebook(middlepanel,-1,wxPoint(-1,-1),wxSize(-1,-1));
 
 	wxPanel *middlesub1 = new wxPanel(middlenb,-1);
-	wxBoxSizer *bookhbox = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *bookvbox = new wxBoxSizer(wxVERTICAL);
 	booklistcolumns = new wxArrayString();
 	booklistcolumndesc = new wxArrayString();
-	int booklistcolumnwidths[] = {120,55,20,200,120,100,100,100};
+	int booklistcolumnwidths[] = {120,55,25,200,120,100,100,100};
 	booklistcolumns->Add(wxT("isbn"));booklistcolumndesc->Add(wxT("ISBN Numarası"));
 	booklistcolumns->Add(wxT("star"));booklistcolumndesc->Add(wxT("Beğeni"));
 	booklistcolumns->Add(wxT(""));booklistcolumndesc->Add(wxT(""));
@@ -152,15 +146,39 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 		booklist->InsertColumn(i,booklistcol);
 		booklist->SetColumnWidth(i,booklistcolumnwidths[i]);
 	}
+	bookvbox->Add(booklist,1,wxALIGN_CENTER|wxEXPAND);
+	bookvbox->Add(-1,2);
+	wxPanel *bookbottompanel = new wxPanel(middlesub1,-1);
+	wxBoxSizer *bookhbox = new wxBoxSizer(wxHORIZONTAL);
+	bookcount = new wxStaticText(bookbottompanel, -1, wxT(""));
+	bookhbox->Add(bookcount,0,wxEXPAND|wxALIGN_LEFT);
+	bookhbox->Add(new wxStaticText(bookbottompanel,-1,wxT("")),1,wxEXPAND);
+	wxArrayString booksorttypes;
+	booksorttypes.Add(wxT("İşlem görme sırasına göre"));
+	booksorttypes.Add(wxT("ISBN numarasına göre"));
+	booksorttypes.Add(wxT("ISBN numarasına göre ters"));
+	booksorttypes.Add(wxT("Beğeniye göre"));
+	booksorttypes.Add(wxT("Beğeniye göre ters"));
+	booksorttypes.Add(wxT("Kitap ismine göre"));
+	booksorttypes.Add(wxT("Kitap ismine göre ters"));
+	booksorttypes.Add(wxT("Yazara göre"));
+	booksorttypes.Add(wxT("Yazara göre ters"));
+	booksorttype = new wxChoice(bookbottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),booksorttypes);
+	bookhbox->Add(booksorttype,0,wxEXPAND|wxALIGN_RIGHT);
+	bookhbox->Add(new wxStaticText(bookbottompanel,-1,wxT(" ")),0,wxEXPAND);
+	booksearchstring = new wxTextCtrl(bookbottompanel,-1,wxT(""),wxPoint(-1,-1),wxSize(150,-1));
+	bookhbox->Add(booksearchstring,0,wxEXPAND|wxALIGN_RIGHT);
+	bookhbox->Add(new wxButton(bookbottompanel,ID_BUTTON_REFRESHBOOKS,wxT("Yenile")),0,wxEXPAND|wxALIGN_RIGHT);
+	bookbottompanel->SetSizer(bookhbox);
+	bookvbox->Add(bookbottompanel,0,wxEXPAND);
 	KaynakcaYonetimi::KitaplariYukle(wxT(""));
-	bookhbox->Add(booklist,1,wxALIGN_CENTER|wxEXPAND);
-	middlesub1->SetSizer(bookhbox);
+	middlesub1->SetSizer(bookvbox);
 
 	wxPanel *middlesub2 = new wxPanel(middlenb,-1);
-	wxBoxSizer *paperhbox = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *papervbox = new wxBoxSizer(wxVERTICAL);
 	paperlistcolumns = new wxArrayString();
 	paperlistcolumndesc = new wxArrayString();
-	int paperlistcolumnwidths[] = {100,55,20,200,120,120,60,40,40,40,40,120,120,120};
+	int paperlistcolumnwidths[] = {100,55,25,200,120,120,60,40,40,40,40,120,120,120};
 	paperlistcolumns->Add(wxT("doi"));paperlistcolumndesc->Add(wxT("DOI Numarası"));
 	paperlistcolumns->Add(wxT("star"));paperlistcolumndesc->Add(wxT("Beğeni"));
 	paperlistcolumns->Add(wxT(""));paperlistcolumndesc->Add(wxT(""));
@@ -184,15 +202,41 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 		paperlist->InsertColumn(i,paperlistcol);
 		paperlist->SetColumnWidth(i,paperlistcolumnwidths[i]);
 	}
+	papervbox->Add(paperlist,1,wxALIGN_CENTER|wxEXPAND);
+	papervbox->Add(-1,2);
+	wxPanel *paperbottompanel = new wxPanel(middlesub2,-1);
+	wxBoxSizer *paperhbox = new wxBoxSizer(wxHORIZONTAL);
+	papercount = new wxStaticText(paperbottompanel, -1, wxT(""));
+	paperhbox->Add(papercount,0,wxEXPAND|wxALIGN_LEFT);
+	paperhbox->Add(new wxStaticText(paperbottompanel,-1,wxT("")),1,wxEXPAND);
+	wxArrayString papersorttypes;
+	papersorttypes.Add(wxT("İşlem görme sırasına göre"));
+	papersorttypes.Add(wxT("DOI numarasına göre"));
+	papersorttypes.Add(wxT("DOI numarasına göre ters"));
+	papersorttypes.Add(wxT("Beğeniye göre"));
+	papersorttypes.Add(wxT("Beğeniye göre ters"));
+	papersorttypes.Add(wxT("Makale başlığına göre"));
+	papersorttypes.Add(wxT("Makale başlığına göre ters"));
+	papersorttypes.Add(wxT("Yazara göre"));
+	papersorttypes.Add(wxT("Yazara göre ters"));
+	papersorttypes.Add(wxT("Yayın tarihine göre"));
+	papersorttypes.Add(wxT("Yayın tarihine göre ters"));
+	papersorttype = new wxChoice(paperbottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),papersorttypes);
+	paperhbox->Add(papersorttype,0,wxEXPAND|wxALIGN_RIGHT);
+	paperhbox->Add(new wxStaticText(paperbottompanel,-1,wxT(" ")),0,wxEXPAND);
+	papersearchstring = new wxTextCtrl(paperbottompanel,-1,wxT(""),wxPoint(-1,-1),wxSize(150,-1));
+	paperhbox->Add(papersearchstring,0,wxEXPAND|wxALIGN_RIGHT);
+	paperhbox->Add(new wxButton(paperbottompanel,ID_BUTTON_REFRESHPAPERS,wxT("Yenile")),0,wxEXPAND|wxALIGN_RIGHT);
+	paperbottompanel->SetSizer(paperhbox);
+	papervbox->Add(paperbottompanel,0,wxEXPAND);
 	KaynakcaYonetimi::MakaleleriYukle(wxT(""));
-	paperhbox->Add(paperlist,1,wxALIGN_CENTER|wxEXPAND);
-	middlesub2->SetSizer(paperhbox);
+	middlesub2->SetSizer(papervbox);
 
 	wxPanel *middlesub3 = new wxPanel(middlenb,-1);
-	wxBoxSizer *documenthbox = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *documentvbox = new wxBoxSizer(wxVERTICAL);
 	documentlistcolumns = new wxArrayString();
 	documentlistcolumndesc = new wxArrayString();
-	int documentlistcolumnwidths[] = {0,55,20,200,240};
+	int documentlistcolumnwidths[] = {0,55,25,200,200};
 	documentlistcolumns->Add(wxT("id"));documentlistcolumndesc->Add(wxT("Id"));
 	documentlistcolumns->Add(wxT("star"));documentlistcolumndesc->Add(wxT("Beğeni"));
 	documentlistcolumns->Add(wxT(""));documentlistcolumndesc->Add(wxT(""));
@@ -207,15 +251,37 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 		documentlist->InsertColumn(i,documentlistcol);
 		documentlist->SetColumnWidth(i,documentlistcolumnwidths[i]);
 	}
+	documentvbox->Add(documentlist,1,wxALIGN_CENTER|wxEXPAND);
+	documentvbox->Add(-1,2);
+	wxPanel *documentbottompanel = new wxPanel(middlesub3,-1);
+	wxBoxSizer *documenthbox = new wxBoxSizer(wxHORIZONTAL);
+	documentcount = new wxStaticText(documentbottompanel, -1, wxT(""));
+	documenthbox->Add(documentcount,0,wxEXPAND|wxALIGN_LEFT);
+	documenthbox->Add(new wxStaticText(documentbottompanel,-1,wxT("")),1,wxEXPAND);
+	wxArrayString documentsorttypes;
+	documentsorttypes.Add(wxT("İşlem görme sırasına göre"));
+	documentsorttypes.Add(wxT("Beğeniye göre"));
+	documentsorttypes.Add(wxT("Beğeniye göre ters"));
+	documentsorttypes.Add(wxT("Doküman adına göre"));
+	documentsorttypes.Add(wxT("Doküman adına göre ters"));
+	documentsorttypes.Add(wxT("Doküman açıklamasına göre"));
+	documentsorttypes.Add(wxT("Doküman açıklamasına göre ters"));
+	documentsorttype = new wxChoice(documentbottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),documentsorttypes);
+	documenthbox->Add(documentsorttype,0,wxEXPAND|wxALIGN_RIGHT);
+	documenthbox->Add(new wxStaticText(documentbottompanel,-1,wxT(" ")),0,wxEXPAND);
+	documentsearchstring = new wxTextCtrl(documentbottompanel,-1,wxT(""),wxPoint(-1,-1),wxSize(150,-1));
+	documenthbox->Add(documentsearchstring,0,wxEXPAND|wxALIGN_RIGHT);
+	documenthbox->Add(new wxButton(documentbottompanel,ID_BUTTON_REFRESHDOCUMENTS,wxT("Yenile")),0,wxEXPAND|wxALIGN_RIGHT);
+	documentbottompanel->SetSizer(documenthbox);
+	documentvbox->Add(documentbottompanel,0,wxEXPAND);
 	KaynakcaYonetimi::DokumanlariYukle(wxT(""));
-	documenthbox->Add(documentlist,1,wxALIGN_CENTER|wxEXPAND);
-	middlesub3->SetSizer(documenthbox);
+	middlesub3->SetSizer(documentvbox);
 	
 	wxPanel *middlesub4 = new wxPanel(middlenb,-1);
-	wxBoxSizer *filehbox = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *filevbox = new wxBoxSizer(wxVERTICAL);
 	filelistcolumns = new wxArrayString();
 	filelistcolumndesc = new wxArrayString();
-	int filelistcolumnwidths[] = {0,55,20,200,240};
+	int filelistcolumnwidths[] = {0,55,25,200,200};
 	filelistcolumns->Add(wxT("id"));filelistcolumndesc->Add(wxT("Id"));
 	filelistcolumns->Add(wxT("star"));filelistcolumndesc->Add(wxT("Beğeni"));
 	filelistcolumns->Add(wxT(""));filelistcolumndesc->Add(wxT(""));
@@ -230,15 +296,37 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 		filelist->InsertColumn(i,filelistcol);
 		filelist->SetColumnWidth(i,filelistcolumnwidths[i]);
 	}
+	filevbox->Add(filelist,1,wxALIGN_CENTER|wxEXPAND);
+	filevbox->Add(-1,2);
+	wxPanel *filebottompanel = new wxPanel(middlesub4,-1);
+	wxBoxSizer *filehbox = new wxBoxSizer(wxHORIZONTAL);
+	filecount = new wxStaticText(filebottompanel, -1, wxT(""));
+	filehbox->Add(filecount,0,wxEXPAND|wxALIGN_LEFT);
+	filehbox->Add(new wxStaticText(filebottompanel,-1,wxT("")),1,wxEXPAND);
+	wxArrayString filesorttypes;
+	filesorttypes.Add(wxT("İşlem görme sırasına göre"));
+	filesorttypes.Add(wxT("Beğeniye göre"));
+	filesorttypes.Add(wxT("Beğeniye göre ters"));
+	filesorttypes.Add(wxT("Dosya adına göre"));
+	filesorttypes.Add(wxT("Dosya adına göre ters"));
+	filesorttypes.Add(wxT("Dosya açıklamasına göre"));
+	filesorttypes.Add(wxT("Dosya açıklamasına göre ters"));
+	filesorttype = new wxChoice(filebottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),filesorttypes);
+	filehbox->Add(filesorttype,0,wxEXPAND|wxALIGN_RIGHT);
+	filehbox->Add(new wxStaticText(filebottompanel,-1,wxT(" ")),0,wxEXPAND);
+	filesearchstring = new wxTextCtrl(filebottompanel,-1,wxT(""),wxPoint(-1,-1),wxSize(150,-1));
+	filehbox->Add(filesearchstring,0,wxEXPAND|wxALIGN_RIGHT);
+	filehbox->Add(new wxButton(filebottompanel,ID_BUTTON_REFRESHFILES,wxT("Yenile")),0,wxEXPAND|wxALIGN_RIGHT);
+	filebottompanel->SetSizer(filehbox);
+	filevbox->Add(filebottompanel,0,wxEXPAND);
 	KaynakcaYonetimi::DosyalariYukle(wxT(""));
-	filehbox->Add(filelist,1,wxALIGN_CENTER|wxEXPAND);
-	middlesub4->SetSizer(filehbox);
+	middlesub4->SetSizer(filevbox);
 
 	wxPanel *middlesub5 = new wxPanel(middlenb,-1);
 	wxBoxSizer *listhbox = new wxBoxSizer(wxHORIZONTAL);
 	listlistcolumns = new wxArrayString();
 	listlistcolumndesc = new wxArrayString();
-	int listlistcolumnwidths[] = {0,120,240,80};
+	int listlistcolumnwidths[] = {0,150,300,80};
 	listlistcolumns->Add(wxT("id"));listlistcolumndesc->Add(wxT("Id"));
 	listlistcolumns->Add(wxT("name"));listlistcolumndesc->Add(wxT("Liste Adı"));
 	listlistcolumns->Add(wxT("desc"));listlistcolumndesc->Add(wxT("Liste Açıklaması"));
@@ -374,22 +462,19 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	dropperlogo2->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::MakaleBirak), NULL, this);
 	dropperlogo3->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::DokumanBirak), NULL, this);
 	dropperlogo4->Connect(wxEVT_DROP_FILES, wxDropFilesEventHandler(KaynakcaYonetimi::DosyaBirak), NULL, this);
-	//this->Connect(wxEVT_SIZE, wxSizeEventHandler(KaynakcaYonetimi::Boyutlandir), NULL, this);
-	//Connect(toolbarSearchBox->GetId(),wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(KaynakcaYonetimi::Arama));
+	Connect(ID_BUTTON_REFRESHBOOKS,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::KitaplariYukleTetikle));
+	Connect(ID_BUTTON_REFRESHPAPERS,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::MakaleleriYukleTetikle));
+	Connect(ID_BUTTON_REFRESHDOCUMENTS,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::DokumanlariYukleTetikle));
+	Connect(ID_BUTTON_REFRESHFILES,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::DosyalariYukleTetikle));
 	
 	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
 	Centre();
 
-	// Bu kismi bir fonksiyona cevirip onresize ile de tekrar tetiklemeliyim
 	int frameSize = mainSize.GetWidth();
 	int blockSize = rightSize.GetWidth()+20;
-	listlist->SetColumnWidth(1,150);
-	listlist->SetColumnWidth(2,300);
+	documentlist->SetColumnWidth(4,frameSize-blockSize-280);
+	filelist->SetColumnWidth(4,frameSize-blockSize-280);
 	listlist->SetColumnWidth(3,frameSize-blockSize-450);
-	//wxString sizerstring;
-	//sizerstring << frameSize << wxT(" ") << frameSize-blockSize << wxT(" ") << blockSize;
-	//wxMessageDialog sizerdial(this,sizerstring,wxT("Boyutlar"),wxOK);
-	//sizerdial.ShowModal();
 }
 
 /////////////////////////////////////////////////
@@ -405,19 +490,6 @@ void KaynakcaYonetimi::Hakkinda(wxCommandEvent& WXUNUSED(event))
 	wxAboutBox(info);
 }
 void KaynakcaYonetimi::Kapat(wxCommandEvent& WXUNUSED(event)) {Close(true);}
-void KaynakcaYonetimi::Arama(wxCommandEvent& WXUNUSED(event))
-{
-	//KaynakcaYonetimi::MakaleleriYukle(wxT(""));
-}
-void KaynakcaYonetimi::Boyutlandir(wxSizeEvent& WXUNUSED(event))
-{
-	KaynakcaYonetimi::Boyutla();
-}
-void KaynakcaYonetimi::Boyutla()
-{
-	wxMessageDialog sizerdial(this,wxT("Boyutlandırma Denemesi"),wxT("Boyutlar"),wxOK);
-	sizerdial.ShowModal();
-}
 /////////////////////////////////////////////////
 // Kitap ////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -465,16 +537,30 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 			wxString srcquery = searchtkz.GetNextToken();
 			if(i==0)
 			{
-				booklistsql << wxT(" WHERE (isbn LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR publisher LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+				booklistsql << wxT(" WHERE (isbn LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR publisher LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%' OR color LIKE '\%") << srcquery << wxT("\%')");
 			}
 			else
 			{
-				booklistsql << wxT(" OR (isbn LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR publisher LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+				booklistsql << wxT(" AND (isbn LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR publisher LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%' OR color LIKE '\%") << srcquery << wxT("\%')");
 			}
 			i++;
 		}
 	}
-	if(sorter != wxT("")) booklistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	if(sorter != wxT(""))
+	{
+		booklistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	}
+	else
+	{
+		if(booksorttype->GetSelection() == 1) booklistsql << wxT(" ORDER BY doi DESC ");
+		if(booksorttype->GetSelection() == 2) booklistsql << wxT(" ORDER BY doi ASC ");
+		if(booksorttype->GetSelection() == 3) booklistsql << wxT(" ORDER BY star DESC ");
+		if(booksorttype->GetSelection() == 4) booklistsql << wxT(" ORDER BY star ASC ");
+		if(booksorttype->GetSelection() == 5) booklistsql << wxT(" ORDER BY title DESC ");
+		if(booksorttype->GetSelection() == 6) booklistsql << wxT(" ORDER BY title ASC ");
+		if(booksorttype->GetSelection() == 7) booklistsql << wxT(" ORDER BY authors DESC ");
+		if(booksorttype->GetSelection() == 8) booklistsql << wxT(" ORDER BY authors ASC ");
+	}
 	vtcevap booklistcevap;
 	booklistcevap = Vt(booklistsql);
 	wxImage::AddHandler(new wxPNGHandler);
@@ -553,6 +639,14 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 	if(booklist->GetItemCount() > 0)
 		booklist->RefreshItems(0,booklist->GetItemCount()-1);
 	middlenb->SetSelection(0);
+	wxString bookcountstring;
+	bookcountstring << booklistcevap.satir << wxT(" kitap gösteriliyor.");
+	bookcount->SetLabel(bookcountstring);
+	booksearchstring->SetValue(query);
+}
+void KaynakcaYonetimi::KitaplariYukleTetikle(wxCommandEvent& event)
+{
+	KaynakcaYonetimi::KitaplariYukle(wxT(""),booksearchstring->GetValue());
 }
 void KaynakcaYonetimi::KitapSirala(wxListEvent& event) {KaynakcaYonetimi::KitaplariYukle(booklistcolumns->Item(event.GetColumn()));}
 void KaynakcaYonetimi::KitapSagTikList(wxCommandEvent &event)
@@ -910,16 +1004,32 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 			wxString srcquery = searchtkz.GetNextToken();
 			if(i==0)
 			{
-				paperlistsql << wxT(" WHERE (doi LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR journal LIKE '\%") << srcquery << wxT("\%' OR published LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+				paperlistsql << wxT(" WHERE (doi LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR journal LIKE '\%") << srcquery << wxT("\%' OR published LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%' OR color LIKE '\%") << srcquery << wxT("\%')");
 			}
 			else
 			{
-				paperlistsql << wxT(" OR (doi LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR journal LIKE '\%") << srcquery << wxT("\%' OR published LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%')");
+				paperlistsql << wxT(" AND (doi LIKE '\%") << srcquery << wxT("\%' OR title LIKE '\%") << srcquery << wxT("\%' OR authors LIKE '\%") << srcquery << wxT("\%' OR journal LIKE '\%") << srcquery << wxT("\%' OR published LIKE '\%") << srcquery << wxT("\%' OR subject LIKE '\%") << srcquery << wxT("\%' OR refid LIKE '\%") << srcquery << wxT("\%' OR color LIKE '\%") << srcquery << wxT("\%')");
 			}
 			i++;
 		}
 	}
-	if(sorter != wxT("")) paperlistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	if(sorter != wxT(""))
+	{
+		paperlistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	}
+	else
+	{
+		if(papersorttype->GetSelection() == 1) paperlistsql << wxT(" ORDER BY doi DESC ");
+		if(papersorttype->GetSelection() == 2) paperlistsql << wxT(" ORDER BY doi ASC ");
+		if(papersorttype->GetSelection() == 3) paperlistsql << wxT(" ORDER BY star DESC ");
+		if(papersorttype->GetSelection() == 4) paperlistsql << wxT(" ORDER BY star ASC ");
+		if(papersorttype->GetSelection() == 5) paperlistsql << wxT(" ORDER BY title DESC ");
+		if(papersorttype->GetSelection() == 6) paperlistsql << wxT(" ORDER BY title ASC ");
+		if(papersorttype->GetSelection() == 7) paperlistsql << wxT(" ORDER BY authors DESC ");
+		if(papersorttype->GetSelection() == 8) paperlistsql << wxT(" ORDER BY authors ASC ");
+		if(papersorttype->GetSelection() == 9) paperlistsql << wxT(" ORDER BY published DESC ");
+		if(papersorttype->GetSelection() == 10) paperlistsql << wxT(" ORDER BY published ASC ");
+	}
 	vtcevap paperlistcevap;
 	paperlistcevap = Vt(paperlistsql);
 	wxImage::AddHandler(new wxPNGHandler);
@@ -998,6 +1108,14 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 	if(paperlist->GetItemCount() > 0)
 		paperlist->RefreshItems(0,paperlist->GetItemCount()-1);
 	middlenb->SetSelection(1);
+	wxString papercountstring;
+	papercountstring << paperlistcevap.satir << wxT(" makale gösteriliyor.");
+	papercount->SetLabel(papercountstring);
+	papersearchstring->SetValue(query);
+}
+void KaynakcaYonetimi::MakaleleriYukleTetikle(wxCommandEvent& event)
+{
+	KaynakcaYonetimi::MakaleleriYukle(wxT(""),papersearchstring->GetValue());
 }
 void KaynakcaYonetimi::MakaleSirala(wxListEvent& event) {KaynakcaYonetimi::MakaleleriYukle(paperlistcolumns->Item(event.GetColumn()));}
 void KaynakcaYonetimi::MakaleSagTikList(wxCommandEvent &event)
@@ -1358,12 +1476,24 @@ void KaynakcaYonetimi::DokumanlariYukle(const wxString& sorter,const wxString& q
 			}
 			else
 			{
-				documentlistsql << wxT(" OR (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
+				documentlistsql << wxT(" AND (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
 			}
 			i++;
 		}
 	}
-	if(sorter != wxT("")) documentlistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	if(sorter != wxT(""))
+	{
+		documentlistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	}
+	else
+	{
+		if(documentsorttype->GetSelection() == 1) documentlistsql << wxT(" ORDER BY star DESC ");
+		if(documentsorttype->GetSelection() == 2) documentlistsql << wxT(" ORDER BY star ASC ");
+		if(documentsorttype->GetSelection() == 3) documentlistsql << wxT(" ORDER BY name DESC ");
+		if(documentsorttype->GetSelection() == 4) documentlistsql << wxT(" ORDER BY name ASC ");
+		if(documentsorttype->GetSelection() == 5) documentlistsql << wxT(" ORDER BY desc DESC ");
+		if(documentsorttype->GetSelection() == 6) documentlistsql << wxT(" ORDER BY desc ASC ");
+	}
 	vtcevap documentlistcevap;
 	documentlistcevap = Vt(documentlistsql);
 	wxImage::AddHandler(new wxPNGHandler);
@@ -1413,6 +1543,14 @@ void KaynakcaYonetimi::DokumanlariYukle(const wxString& sorter,const wxString& q
 	if(documentlist->GetItemCount() > 0)
 		documentlist->RefreshItems(0,documentlist->GetItemCount()-1);
 	middlenb->SetSelection(2);
+	wxString documentcountstring;
+	documentcountstring << documentlistcevap.satir << wxT(" doküman gösteriliyor.");
+	documentcount->SetLabel(documentcountstring);
+	documentsearchstring->SetValue(query);
+}
+void KaynakcaYonetimi::DokumanlariYukleTetikle(wxCommandEvent& event)
+{
+	KaynakcaYonetimi::DokumanlariYukle(wxT(""),documentsearchstring->GetValue());
 }
 void KaynakcaYonetimi::DokumanSirala(wxListEvent& event) { KaynakcaYonetimi::DokumanlariYukle(documentlistcolumns->Item(event.GetColumn())); }
 void KaynakcaYonetimi::DokumanSagTikTik(wxCommandEvent &event)
@@ -1472,7 +1610,6 @@ void KaynakcaYonetimi::DokumanSagTikTik(wxCommandEvent &event)
 			int textcolorfromstar;
 			textcolorfromstar = 150-wxAtoi(starstring)*30;
 			documentlist->SetItemColumnImage(item,1,wxAtoi(starstring));
-			//filelist->SetItem(booklist->GetFocusedItem(),1,starstring);
 			documentlist->SetItemTextColour(item,wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
 		}
 		break;
@@ -1627,12 +1764,24 @@ void KaynakcaYonetimi::DosyalariYukle(const wxString& sorter,const wxString& que
 			}
 			else
 			{
-				filelistsql << wxT(" OR (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
+				filelistsql << wxT(" AND (name LIKE '\%") << srcquery << wxT("\%' OR desc LIKE '\%") << srcquery << wxT("\%')");
 			}
 			i++;
 		}
 	}
-	if(sorter != wxT("")) filelistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	if(sorter != wxT(""))
+	{
+		filelistsql << wxT(" ORDER BY ") << sorter << wxT(" DESC ");
+	}
+	else
+	{
+		if(filesorttype->GetSelection() == 1) filelistsql << wxT(" ORDER BY star DESC ");
+		if(filesorttype->GetSelection() == 2) filelistsql << wxT(" ORDER BY star ASC ");
+		if(filesorttype->GetSelection() == 3) filelistsql << wxT(" ORDER BY name DESC ");
+		if(filesorttype->GetSelection() == 4) filelistsql << wxT(" ORDER BY name ASC ");
+		if(filesorttype->GetSelection() == 5) filelistsql << wxT(" ORDER BY desc DESC ");
+		if(filesorttype->GetSelection() == 6) filelistsql << wxT(" ORDER BY desc ASC ");
+	}
 	vtcevap filelistcevap;
 	filelistcevap = Vt(filelistsql);
 	wxImage::AddHandler(new wxPNGHandler);
@@ -1682,6 +1831,14 @@ void KaynakcaYonetimi::DosyalariYukle(const wxString& sorter,const wxString& que
 	if(filelist->GetItemCount() > 0)
 		filelist->RefreshItems(0,filelist->GetItemCount()-1);
 	middlenb->SetSelection(3);
+	wxString filecountstring;
+	filecountstring << filelistcevap.satir << wxT(" dosya gösteriliyor.");
+	filecount->SetLabel(filecountstring);
+	filesearchstring->SetValue(query);
+}
+void KaynakcaYonetimi::DosyalariYukleTetikle(wxCommandEvent& event)
+{
+	KaynakcaYonetimi::DosyalariYukle(wxT(""),filesearchstring->GetValue());
 }
 void KaynakcaYonetimi::DosyaSirala(wxListEvent& event) { KaynakcaYonetimi::DosyalariYukle(filelistcolumns->Item(event.GetColumn())); }
 void KaynakcaYonetimi::DosyaSagTikTik(wxCommandEvent &event)
@@ -1741,7 +1898,6 @@ void KaynakcaYonetimi::DosyaSagTikTik(wxCommandEvent &event)
 			int textcolorfromstar;
 			textcolorfromstar = 150-wxAtoi(starstring)*30;
 			filelist->SetItemColumnImage(item,1,wxAtoi(starstring));
-			//filelist->SetItem(booklist->GetFocusedItem(),1,starstring);
 			filelist->SetItemTextColour(item,wxColour(textcolorfromstar,textcolorfromstar,textcolorfromstar));
 		}
 		break;
@@ -1948,8 +2104,10 @@ void KaynakcaYonetimi::GosterListeDialog(wxListEvent &event)
 	item.SetColumn(0);
 	listlist->GetItem(item);
 	GosterListe gosterliste(wxT("Liste Görüntüleme"),listlist->GetItemText(item));
-	gosterliste.ShowModal();
-	gosterliste.Destroy();
+	if(gosterliste.ShowModal() == wxID_OK) {
+		gosterliste.CiktiVer();
+		gosterliste.Destroy();
+	}
 }
 /////////////////////////////////////////////////
 // Ajanda ///////////////////////////////////////

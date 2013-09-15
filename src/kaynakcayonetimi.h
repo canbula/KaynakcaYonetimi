@@ -59,15 +59,16 @@ public:
 		ID_LISTRCMENU_EDIT,
 		ID_LISTRCMENU_DELETE,
 		ID_TODORCMENU_EDIT,
-		ID_TODORCMENU_DELETE
+		ID_TODORCMENU_DELETE,
+		ID_BUTTON_REFRESHBOOKS,
+		ID_BUTTON_REFRESHPAPERS,
+		ID_BUTTON_REFRESHDOCUMENTS,
+		ID_BUTTON_REFRESHFILES
 	};
 
 	// Genel
 	void Kapat(wxCommandEvent& event);
 	void Hakkinda(wxCommandEvent& event);
-	void Arama(wxCommandEvent& event);
-	void Boyutlandir(wxSizeEvent& event);
-	void Boyutla();
 	wxNotebook* middlenb;
 	
 	// Kitap
@@ -75,6 +76,7 @@ public:
 	void EkleKitapDialog(wxCommandEvent& event);
 	void BulISBNDialog(wxCommandEvent& event);
 	void KitaplariYukle(const wxString& sorter,const wxString& query=wxT(""));
+	void KitaplariYukleTetikle(wxCommandEvent& event);
 	void KitapSirala(wxListEvent& event);
 	void KitapSagTikList(wxCommandEvent &event);
 	void KitapSagTikTik(wxCommandEvent &event);
@@ -82,6 +84,9 @@ public:
 	void KitapCiftTik(wxListEvent &event);
 	void KitapYeniDosya(const wxString& yenidosya);
 	void KitapBirak(wxDropFilesEvent& event);
+	wxStaticText* bookcount;
+	wxChoice* booksorttype;
+	wxTextCtrl* booksearchstring;
 	wxListView* booklist;
 	wxArrayString* booklistcolumns;
 	wxArrayString* booklistcolumndesc;
@@ -91,6 +96,7 @@ public:
 	void EkleMakaleDialog(wxCommandEvent& event);
 	void BulDOIDialog(wxCommandEvent& event);
 	void MakaleleriYukle(const wxString& sorter,const wxString& query=wxT(""));
+	void MakaleleriYukleTetikle(wxCommandEvent& event);
 	void MakaleSirala(wxListEvent& event);
 	void MakaleSagTikList(wxCommandEvent &event);
 	void MakaleSagTikTik(wxCommandEvent &event);
@@ -98,6 +104,9 @@ public:
 	void MakaleCiftTik(wxListEvent &event);
 	void MakaleYeniDosya(const wxString& yenidosya);
 	void MakaleBirak(wxDropFilesEvent& event);
+	wxStaticText* papercount;
+	wxChoice* papersorttype;
+	wxTextCtrl* papersearchstring;
 	wxListView* paperlist;
 	wxArrayString* paperlistcolumns;
 	wxArrayString* paperlistcolumndesc;
@@ -106,12 +115,16 @@ public:
 	void DosyaEkleDokumanDialog(wxCommandEvent& event);
 	void EkleDokumanDialog(wxCommandEvent& event);
 	void DokumanlariYukle(const wxString& sorter,const wxString& query=wxT(""));
+	void DokumanlariYukleTetikle(wxCommandEvent& event);
 	void DokumanSirala(wxListEvent& event);
 	void DokumanSagTikTik(wxCommandEvent &event);
 	void DokumanSagTik(wxListEvent &event);
 	void DokumanCiftTik(wxListEvent &event);
 	void DokumanYeniDosya(const wxString& yenidosya);
 	void DokumanBirak(wxDropFilesEvent& event);
+	wxStaticText* documentcount;
+	wxChoice* documentsorttype;
+	wxTextCtrl* documentsearchstring;
 	wxListView* documentlist;
 	wxArrayString* documentlistcolumns;
 	wxArrayString* documentlistcolumndesc;
@@ -120,12 +133,16 @@ public:
 	void DosyaEkleDosyaDialog(wxCommandEvent& event);
 	void EkleDosyaDialog(wxCommandEvent& event);
 	void DosyalariYukle(const wxString& sorter,const wxString& query=wxT(""));
+	void DosyalariYukleTetikle(wxCommandEvent& event);
 	void DosyaSirala(wxListEvent& event);
 	void DosyaSagTikTik(wxCommandEvent &event);
 	void DosyaSagTik(wxListEvent &event);
 	void DosyaCiftTik(wxListEvent &event);
 	void DosyaYeniDosya(const wxString& yenidosya);
 	void DosyaBirak(wxDropFilesEvent& event);
+	wxStaticText* filecount;
+	wxChoice* filesorttype;
+	wxTextCtrl* filesearchstring;
 	wxListView* filelist;
 	wxArrayString* filelistcolumns;
 	wxArrayString* filelistcolumndesc;
