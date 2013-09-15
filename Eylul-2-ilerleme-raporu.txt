@@ -1,0 +1,37 @@
+=====================================================
+    Kaynakça Yönetimi - Pardus Yazılım Kampı 2013    
+=====================================================
+    Bora Canbula - bora.canbula@cbu.edu.tr           
+    İlkin Sencar - ilkinsencar@ogr.cbu.edu.tr        
+=====================================================
+    Eylül Ayı 2. Gelişme Raporu                     
+=====================================================
+- Kitaplar, makaleler, dokümanlar ve dosyalar için
+arama ve sıralama fonksiyonları tamamlandı.
+- Öğelerle ilişkilendirilmiş dosyaların konumlarını 
+ve uzantılarını tespit eden fonksiyonun yerine daha 
+hızlı bir alternatifi hazırlandı.
+- Kitap ve makaleleri renk ile işaretleme özelliği
+eklendi.
+- İstatistik, sıralama ve arama amaçlı durum çubuğu 
+eklendi.
+- Referans listelerinin çıktılarını düz metin, LaTeX,
+BibTeX, xml, MSWord-OpenOffice, RIS ve EndNote, ve 
+sıkıştırılmış dosya paketi biçimlerinde veren 
+fonksiyon geliştirildi.
+- SQLite veritabanı eklenen yeni özellikleri 
+karşılayacak şekilde güncellendi.
+- Makefile yeni eklenen kaynak dosyalarını da 
+derleyecek şekilde güncellendi.
+- Programın Mac OS X işletim sistemine olan uyumu
+arttırıldı.
+- 500'den fazla öğenin programa eklemesi yapılarak
+kitap ve makalelerin bilgilerinin çevrimiçi 
+kaynaklardan bulunması süreci bir çok farklı 
+senaryoya karşı test edildi ve bulunan eksiklikler 
+giderildi.
+- Programın kodlama ve test aşamaları tamamlandı, 
+projenin tamamlanması için kalan son bir haftalık 
+süreçte yardım menüsü içeriğinin hazırlanması ve 
+dokümantasyon aşamaları tamamlanacaktır.
+=====================================================
