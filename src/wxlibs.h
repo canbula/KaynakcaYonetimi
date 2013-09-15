@@ -64,8 +64,10 @@
 #include <wx/stattext.h>
 #include <wx/statusbr.h>
 #include <wx/stdpaths.h>
+#include <wx/stream.h>
 #include <wx/string.h>
 #include <wx/textctrl.h>
+#include <wx/textfile.h>
 #include <wx/tokenzr.h>
 #include <wx/toolbar.h>
 #include <wx/utils.h>

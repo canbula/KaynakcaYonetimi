@@ -15,6 +15,7 @@ php5-sqlite
 php-services-json
 xdg-open
 imagemagick
+bibutils
 
 Derleme tamamlandıktan sonra ./KaynakcaYonetimi 
 çalıştırılabilir dosyası ile programı açabilirsiniz.

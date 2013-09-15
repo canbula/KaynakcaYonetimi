@@ -38,6 +38,7 @@ public:
 	void SayfayiHazirla();
 	void ListeyiYukle();
 	void SirayiYenile();
+	void CiktiVer();
 
 	wxString* listid;
 	wxListView* showlist;

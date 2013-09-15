@@ -106,7 +106,11 @@ GosterListe::GosterListe(const wxString& title,wxString id)
 	displaymodes.Add(wxT("Gösterim Modu"));
 	displaymodes.Add(wxT("Düz Metin"));
 	displaymodes.Add(wxT("LaTeX"));
-	displaymodes.Add(wxT("OpenOffice"));
+	displaymodes.Add(wxT("BibTeX"));
+	displaymodes.Add(wxT("XML (MODS)"));
+	displaymodes.Add(wxT("XML (MS Word/OpenOffice)"));
+	displaymodes.Add(wxT("RIS"));
+	displaymodes.Add(wxT("EndNote"));
 	displaymodes.Add(wxT("Dosya Paketi"));
 	displaymode = new wxChoice(bottompanel,-1,wxPoint(-1,-1),wxSize(150,-1),displaymodes);
 	bottomhbox->Add(displaymode,0,wxEXPAND);
@@ -205,6 +209,296 @@ void GosterListe::SirayiYenile()
 		VtEkleSilGuncelle(wxT("UPDATE listrefs SET number=? WHERE listid==? AND isbndoi==?"),numberupdate);
 	}
 	GosterListe::ListeyiYukle();
+}
+
+void GosterListe::CiktiVer()
+{
+	if(displaymode->GetSelection() > 0 and displaymode->GetSelection() < 5)
+	{
+		wxString listsql;
+		listsql << wxT("SELECT * FROM lists WHERE id=='") << *listid << wxT("'");
+		vtcevap listcevap;
+		listcevap = Vt(listsql);
+		wxString listeciktidosyasi = appLocation+wxT("files/list.")+*listid+wxT(".");
+		if(displaymode->GetSelection() == 1) listeciktidosyasi << wxT("txt");
+		if(displaymode->GetSelection() == 2) listeciktidosyasi << wxT("tex");
+		if(displaymode->GetSelection() > 2) listeciktidosyasi << wxT("bib");
+		wxTextFile listeciktisi(listeciktidosyasi);
+		if(listeciktisi.Exists())
+		{
+			listeciktisi.Open();
+		}
+		else
+		{
+			listeciktisi.Create();
+		}
+		listeciktisi.Clear();
+		wxString listoutputsql;
+		listoutputsql << wxT("SELECT * FROM listrefs WHERE listid=='") << *listid << wxT("' ORDER BY number ASC");
+		vtcevap listoutputcevap;
+		listoutputcevap = Vt(listoutputsql);
+		wxString firstline;
+		if(displaymode->GetSelection() == 2) firstline << wxT("\\begin{thebibliography}{") << listoutputcevap.satir << wxT("}");
+		if(displaymode->GetSelection() == 2) listeciktisi.AddLine(firstline);
+		wxString ciktisatiri;
+		for(int i=0;i<listoutputcevap.satir;i++)
+		{
+			ciktisatiri = listcevap.sonuc.Item(3);
+			wxString listoutputitemsql;
+			vtcevap listoutputitemcevap;
+			wxString refidstring;
+			if(listoutputcevap.sonuc.Item(i*listoutputcevap.sutun+2) == wxT("book"))
+			{
+				listoutputitemsql << wxT("SELECT * FROM books WHERE isbn=='") << listoutputcevap.sonuc.Item(i*listoutputcevap.sutun+3) << wxT("'");
+				listoutputitemcevap = Vt(listoutputitemsql);
+				ciktisatiri.Replace(wxT("{cilt}"),wxT(""));
+				ciktisatiri.Replace(wxT("({sayı})"),wxT(""));
+				ciktisatiri.Replace(wxT("{sayı}"),wxT(""));
+				ciktisatiri.Replace(wxT("{ilksayfa-sonsayfa}"),wxT(""));
+				ciktisatiri.Replace(wxT("{ilksayfa}"),wxT(""));
+				ciktisatiri.Replace(wxT("{sonsayfa}"),wxT(""));
+				ciktisatiri.Replace(wxT("({yıl})"),wxT(""));
+				ciktisatiri.Replace(wxT("{yıl}"),wxT(""));
+				refidstring << wxT("\\bibitem{") << listoutputitemcevap.sonuc.Item(5) << wxT("}");
+				if(displaymode->GetSelection() > 2)
+				{
+					listeciktisi.AddLine(wxT("@Book{")+listoutputitemcevap.sonuc.Item(5)+wxT(","));
+					listeciktisi.AddLine(wxT("author    = {")+listoutputitemcevap.sonuc.Item(2)+wxT("},"));
+					listeciktisi.AddLine(wxT("title     = {")+listoutputitemcevap.sonuc.Item(1)+wxT("},"));
+					listeciktisi.AddLine(wxT("publisher = {")+listoutputitemcevap.sonuc.Item(3)+wxT("},"));
+					listeciktisi.AddLine(wxT("year      = {},"));
+					listeciktisi.AddLine(wxT("}"));
+				}
+			}
+			if(listoutputcevap.sonuc.Item(i*listoutputcevap.sutun+2) == wxT("paper"))
+			{
+				listoutputitemsql << wxT("SELECT * FROM papers WHERE doi=='") << listoutputcevap.sonuc.Item(i*listoutputcevap.sutun+3) << wxT("'");
+				listoutputitemcevap = Vt(listoutputitemsql);
+				ciktisatiri.Replace(wxT("{cilt}"),listoutputitemcevap.sonuc.Item(4));
+				if(listoutputitemcevap.sonuc.Item(5) == wxT(""))
+				{
+					ciktisatiri.Replace(wxT("({sayı})"),wxT(""));
+				}
+				else
+				{
+					ciktisatiri.Replace(wxT("{sayı}"),listoutputitemcevap.sonuc.Item(5));
+				}
+				ciktisatiri.Replace(wxT("{ilksayfa}"),listoutputitemcevap.sonuc.Item(6));
+				ciktisatiri.Replace(wxT("{ilksayfa"),listoutputitemcevap.sonuc.Item(6));
+				ciktisatiri.Replace(wxT("{sonsayfa}"),listoutputitemcevap.sonuc.Item(7));
+				wxString ilksonsayfa;
+				if(listoutputitemcevap.sonuc.Item(7) == wxT(""))
+				{
+					ilksonsayfa << listoutputitemcevap.sonuc.Item(6);
+					ciktisatiri.Replace(wxT("-sonsayfa}"),wxT(""));
+				}
+				else
+				{
+					ilksonsayfa << listoutputitemcevap.sonuc.Item(6) << wxT("-") << listoutputitemcevap.sonuc.Item(7);
+					ciktisatiri.Replace(wxT("sonsayfa}"),listoutputitemcevap.sonuc.Item(7));
+				}
+				ciktisatiri.Replace(wxT("{yıl}"),listoutputitemcevap.sonuc.Item(8).Mid(0,4));
+				refidstring << wxT("\\bibitem{") << listoutputitemcevap.sonuc.Item(11) << wxT("}");
+				if(displaymode->GetSelection() > 2)
+				{
+					listeciktisi.AddLine(wxT("@Article{")+listoutputitemcevap.sonuc.Item(11)+wxT(","));
+					listeciktisi.AddLine(wxT("author    = {")+listoutputitemcevap.sonuc.Item(2)+wxT("},"));
+					listeciktisi.AddLine(wxT("title     = {")+listoutputitemcevap.sonuc.Item(1)+wxT("},"));
+					listeciktisi.AddLine(wxT("journal   = {")+listoutputitemcevap.sonuc.Item(3)+wxT("},"));
+					listeciktisi.AddLine(wxT("year      = {")+listoutputitemcevap.sonuc.Item(8).Mid(0,4)+wxT("},"));
+					listeciktisi.AddLine(wxT("volume    = {")+listoutputitemcevap.sonuc.Item(4)+wxT("},"));
+					listeciktisi.AddLine(wxT("number    = {")+listoutputitemcevap.sonuc.Item(5)+wxT("},"));
+					listeciktisi.AddLine(wxT("pages     = {")+ilksonsayfa+wxT("},"));
+					listeciktisi.AddLine(wxT("month     = {")+listoutputitemcevap.sonuc.Item(8).Mid(5,2)+wxT("},"));
+					listeciktisi.AddLine(wxT("url       = {")+listoutputitemcevap.sonuc.Item(9)+wxT("},"));
+					listeciktisi.AddLine(wxT("}"));
+				}
+			}
+			ciktisatiri.Replace(wxT("{başlık}"),listoutputitemcevap.sonuc.Item(1));
+			ciktisatiri.Replace(wxT("{yazarlar}"),listoutputitemcevap.sonuc.Item(2));
+			ciktisatiri.Replace(wxT("{yayıncı}"),listoutputitemcevap.sonuc.Item(3));
+			ciktisatiri.Replace(wxT(" {yenisatır} "),wxT("\n"));
+			if(displaymode->GetSelection() == 2) listeciktisi.AddLine(refidstring);
+			if(displaymode->GetSelection() == 1 or displaymode->GetSelection() == 2) listeciktisi.AddLine(ciktisatiri);
+		}
+		if(displaymode->GetSelection() == 2) listeciktisi.AddLine(wxT("\\end{thebibliography}"));
+		listeciktisi.Write();
+		listeciktisi.Close();
+		if(displaymode->GetSelection() < 4)
+		{
+			wxFileDialog *filesaveas = new wxFileDialog(this,wxT("Çıktı dosyasını kaydedin.."),wxT(""),wxT(""),wxT("*.txt;*.tex;*.bib"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+			filesaveas->SetPath(listeciktidosyasi);
+			if(filesaveas->ShowModal() == wxID_OK)
+			{
+				wxCopyFile(listeciktidosyasi,filesaveas->GetPath());
+			}
+			/*
+			wxString showoutputcommand;
+			if(platform==wxT("linux"))
+				showoutputcommand << wxT("xdg-open '") << listeciktidosyasi << wxT("'");
+			if(platform==wxT("apple"))
+			{
+				showoutputcommand << wxT("open '") << listeciktidosyasi << wxT("'");
+				showoutputcommand.Replace(wxT("//"),wxT("/"));
+			}
+			wxExecute(showoutputcommand);
+			*/
+		}
+	}
+	if(displaymode->GetSelection() == 4)
+	{
+		wxString listeciktidosyasi = appLocation+wxT("files/list.")+*listid+wxT(".bib");
+		wxString listeciktidosyasi2 = appLocation+wxT("files/list.")+*listid+wxT(".mods.xml");
+		wxString convertcommand = wxT("sh -c \"bib2xml '")+listeciktidosyasi+wxT("' > '")+listeciktidosyasi2+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		wxFileDialog *filesaveas = new wxFileDialog(this,wxT("Çıktı dosyasını kaydedin.."),wxT(""),wxT(""),wxT("*.xml"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		filesaveas->SetPath(listeciktidosyasi2);
+		if(filesaveas->ShowModal() == wxID_OK)
+		{
+			wxCopyFile(listeciktidosyasi2,filesaveas->GetPath());
+		}
+		/*
+		wxString showoutputcommand;
+		if(platform==wxT("linux"))
+			showoutputcommand << wxT("xdg-open '") << listeciktidosyasi2 << wxT("'");
+		if(platform==wxT("apple"))
+		{
+			showoutputcommand << wxT("open '") << listeciktidosyasi2 << wxT("'");
+			showoutputcommand.Replace(wxT("//"),wxT("/"));
+		}
+		wxExecute(showoutputcommand);
+		*/
+	}
+	if(displaymode->GetSelection() == 5)
+	{
+		wxString listeciktidosyasi = appLocation+wxT("files/list.")+*listid+wxT(".bib");
+		wxString listeciktidosyasi2 = appLocation+wxT("files/list.")+*listid+wxT(".mods.xml");
+		wxString listeciktidosyasi3 = appLocation+wxT("files/list.")+*listid+wxT(".xml");
+		wxString convertcommand = wxT("sh -c \"bib2xml '")+listeciktidosyasi+wxT("' > '")+listeciktidosyasi2+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		convertcommand = wxT("sh -c \"xml2wordbib '")+listeciktidosyasi2+wxT("' > '")+listeciktidosyasi3+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		wxFileDialog *filesaveas = new wxFileDialog(this,wxT("Çıktı dosyasını kaydedin.."),wxT(""),wxT(""),wxT("*.xml"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		filesaveas->SetPath(listeciktidosyasi3);
+		if(filesaveas->ShowModal() == wxID_OK)
+		{
+			wxCopyFile(listeciktidosyasi3,filesaveas->GetPath());
+		}
+		/*
+		wxString showoutputcommand;
+		if(platform==wxT("linux"))
+			showoutputcommand << wxT("xdg-open '") << listeciktidosyasi3 << wxT("'");
+		if(platform==wxT("apple"))
+		{
+			showoutputcommand << wxT("open '") << listeciktidosyasi3 << wxT("'");
+			showoutputcommand.Replace(wxT("//"),wxT("/"));
+		}
+		wxExecute(showoutputcommand);
+		*/
+	}
+	if(displaymode->GetSelection() == 6)
+	{
+		wxString listeciktidosyasi = appLocation+wxT("files/list.")+*listid+wxT(".bib");
+		wxString listeciktidosyasi2 = appLocation+wxT("files/list.")+*listid+wxT(".mods.xml");
+		wxString listeciktidosyasi3 = appLocation+wxT("files/list.")+*listid+wxT(".ris");
+		wxString convertcommand = wxT("sh -c \"bib2xml '")+listeciktidosyasi+wxT("' > '")+listeciktidosyasi2+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		convertcommand = wxT("sh -c \"xml2ris '")+listeciktidosyasi2+wxT("' > '")+listeciktidosyasi3+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		wxFileDialog *filesaveas = new wxFileDialog(this,wxT("Çıktı dosyasını kaydedin.."),wxT(""),wxT(""),wxT("*.ris"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		filesaveas->SetPath(listeciktidosyasi3);
+		if(filesaveas->ShowModal() == wxID_OK)
+		{
+			wxCopyFile(listeciktidosyasi3,filesaveas->GetPath());
+		}
+		/*
+		wxString showoutputcommand;
+		if(platform==wxT("linux"))
+			showoutputcommand << wxT("xdg-open '") << listeciktidosyasi3 << wxT("'");
+		if(platform==wxT("apple"))
+		{
+			showoutputcommand << wxT("open '") << listeciktidosyasi3 << wxT("'");
+			showoutputcommand.Replace(wxT("//"),wxT("/"));
+		}
+		wxExecute(showoutputcommand);
+		*/
+	}
+	if(displaymode->GetSelection() == 7)
+	{
+		wxString listeciktidosyasi = appLocation+wxT("files/list.")+*listid+wxT(".bib");
+		wxString listeciktidosyasi2 = appLocation+wxT("files/list.")+*listid+wxT(".mods.xml");
+		wxString listeciktidosyasi3 = appLocation+wxT("files/list.")+*listid+wxT(".enl");
+		wxString convertcommand = wxT("sh -c \"bib2xml '")+listeciktidosyasi+wxT("' > '")+listeciktidosyasi2+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		convertcommand = wxT("sh -c \"xml2end '")+listeciktidosyasi2+wxT("' > '")+listeciktidosyasi3+wxT("'\"");
+		wxExecute(convertcommand,wxEXEC_SYNC);
+		wxFileDialog *filesaveas = new wxFileDialog(this,wxT("Çıktı dosyasını kaydedin.."),wxT(""),wxT(""),wxT("*.enl"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		filesaveas->SetPath(listeciktidosyasi3);
+		if(filesaveas->ShowModal() == wxID_OK)
+		{
+			wxCopyFile(listeciktidosyasi3,filesaveas->GetPath());
+		}
+		/*
+		wxString showoutputcommand;
+		if(platform==wxT("linux"))
+			showoutputcommand << wxT("xdg-open '") << listeciktidosyasi3 << wxT("'");
+		if(platform==wxT("apple"))
+		{
+			showoutputcommand << wxT("open '") << listeciktidosyasi3 << wxT("'");
+			showoutputcommand.Replace(wxT("//"),wxT("/"));
+		}
+		wxExecute(showoutputcommand);
+		*/
+	}
+	if(displaymode->GetSelection() == 8)
+	{
+		wxString listeciktidosyasi = appLocation+wxT("files/list.")+*listid+wxT(".tar");
+		wxString createtarcommand = wxT("tar -cf ");
+		createtarcommand << wxT("'") << listeciktidosyasi << wxT("' --directory=") << appLocation << wxT("files");
+		wxString createtarsql;
+		createtarsql << wxT("SELECT * FROM listrefs WHERE listid=='") << *listid << wxT("' ORDER BY number ASC");
+		vtcevap createtarcevap;
+		createtarcevap = Vt(createtarsql);
+		for(int i=0;i<createtarcevap.satir;i++)
+		{
+			wxString dosyaid = createtarcevap.sonuc.Item(i*createtarcevap.sutun+3);
+			dosyaid.Replace(wxT("/"),wxT("|"));
+			wxString dosyakontrolcommand;
+			if(platform==wxT("linux"))
+				dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << dosyaid << wxT(".*");
+			if(platform==wxT("apple"))
+				dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name '") << dosyaid << wxT(".*'");
+			wxArrayString output;
+			wxArrayString errors;
+			wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
+			if(output.GetCount() > 0)
+			{
+				if(wxFileExists(output.Item(0)))
+				{
+					wxFileName refdosya(output.Item(0));
+					createtarcommand << wxT(" '") << refdosya.GetFullName() << wxT("'");
+				}
+			}
+		}
+		wxExecute(createtarcommand,wxEXEC_SYNC);
+		wxFileDialog *filesaveas = new wxFileDialog(this,wxT("Çıktı dosyasını kaydedin.."),wxT(""),wxT(""),wxT("*.tar"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		filesaveas->SetPath(listeciktidosyasi);
+		if(filesaveas->ShowModal() == wxID_OK)
+		{
+			wxCopyFile(listeciktidosyasi,filesaveas->GetPath());
+		}
+		/*
+		wxString showoutputcommand;
+		if(platform==wxT("linux"))
+			showoutputcommand << wxT("xdg-open '") << listeciktidosyasi << wxT("'");
+		if(platform==wxT("apple"))
+		{
+			showoutputcommand << wxT("open '") << listeciktidosyasi << wxT("'");
+			showoutputcommand.Replace(wxT("//"),wxT("/"));
+		}
+		wxExecute(showoutputcommand);
+		*/
+	}
 }
 
 void GosterListe::OgeyeGozAt(wxListEvent &event)

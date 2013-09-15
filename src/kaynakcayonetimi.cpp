@@ -552,8 +552,8 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 	}
 	else
 	{
-		if(booksorttype->GetSelection() == 1) booklistsql << wxT(" ORDER BY doi DESC ");
-		if(booksorttype->GetSelection() == 2) booklistsql << wxT(" ORDER BY doi ASC ");
+		if(booksorttype->GetSelection() == 1) booklistsql << wxT(" ORDER BY isbn DESC ");
+		if(booksorttype->GetSelection() == 2) booklistsql << wxT(" ORDER BY isbn ASC ");
 		if(booksorttype->GetSelection() == 3) booklistsql << wxT(" ORDER BY star DESC ");
 		if(booksorttype->GetSelection() == 4) booklistsql << wxT(" ORDER BY star ASC ");
 		if(booksorttype->GetSelection() == 5) booklistsql << wxT(" ORDER BY title DESC ");
