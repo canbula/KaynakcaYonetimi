@@ -22,6 +22,7 @@ from xml.dom.minidom import parseString
 import sys
 import sqlite3 as lite
 import re
+import os
 
 TAGS = re.compile(r'<[^>]+>')
 
@@ -99,8 +100,9 @@ def DOIsearch(DOInumber):
 			link = ''
 		subject = ''
 		title = title[0].upper() + title[1:].lower()
+		dbpath = os.path.dirname(os.path.abspath(__file__))+"/../db/Kaynakca.db"
 		con = None
-		con = lite.connect('db/Kaynakca.db')
+		con = lite.connect(dbpath)
 		with con:
 			cur = con.cursor()
 			cur.execute("INSERT OR REPLACE INTO paper_retrieve VALUES (?,?,?,?,?,?,?,?,?,?,?,?);",(doi,title,authors,journal,volume,issue,firstpage,lastpage,published,link,subject,refid))

@@ -23,7 +23,8 @@ $booktosearch = str_replace(" ","+",$booktosearch);
 $apirequest = "http://isbndb.com/api/books.xml?access_key=QHS9SJ4R&results=subjects&index1=combined&value1=".$booktosearch;
 $apiresponse = @simplexml_load_file($apirequest) or die();
 
-$db = new SQLite3('db/Kaynakca.db');
+$dbpath = dirname(__FILE__)."/../db/Kaynakca.db";
+$db = new SQLite3($dbpath);
 $dbauthortitle = md5($srcauthor.$srctitle);
 foreach($apiresponse->BookList->BookData as $books) {
 	$book["isbn"] = $books["isbn"];

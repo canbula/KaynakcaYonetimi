@@ -22,9 +22,9 @@ EkleDokuman::EkleDokuman(const wxString& title,const wxString& id)
 {
 	
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/document1.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap okButton(appLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap cancelButton(appLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(srcLocation+wxT("resource/toolbar/document1.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap okButton(srcLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap cancelButton(srcLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);

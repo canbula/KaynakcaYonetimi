@@ -1,0 +1,8 @@
+[Desktop Entry]
+Terminal=false
+Icon=kaynakcayonetimi
+Type=Application
+Categories=Office
+Exec=kaynakcayonetimi
+Name=Kaynakça Yönetimi
+Comment=Kaynakça öğelerini barındıran bir veritabanını yöneten ve tez veya makalelerde kullanılmak üzere şeçilen öğeleri barındıran kaynakça listelerini istenilen biçimde otomatik oluşturan bir program.

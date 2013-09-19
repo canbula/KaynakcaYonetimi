@@ -24,6 +24,7 @@ import hashlib
 from tidylib import tidy_document
 from BeautifulSoup import BeautifulSoup
 import re
+import os
 
 def DOIfind(srcauthor,srctitle):
 	br = mechanize.Browser()
@@ -48,8 +49,9 @@ def DOIfind(srcauthor,srctitle):
 	newcontent = content.split('&#160;')
 	authortitle = srcauthor + srctitle
 	authortitle = hashlib.md5(authortitle).hexdigest()
+	dbpath = os.path.dirname(os.path.abspath(__file__))+"/../db/Kaynakca.db"
 	con = None
-	con = lite.connect('db/Kaynakca.db')
+	con = lite.connect(dbpath)
 	renewquery = "DELETE FROM finddoi WHERE authortitle = '%s';" % authortitle.strip()
 	con.execute(renewquery)
 	for content in newcontent:

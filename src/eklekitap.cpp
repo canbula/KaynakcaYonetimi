@@ -21,10 +21,10 @@ EkleKitap::EkleKitap(const wxString& title,const wxString& isbn)
 	: wxDialog(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(500,550))
 {
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/book.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap searchButton(appLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap okButton(appLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap cancelButton(appLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(srcLocation+wxT("resource/toolbar/book.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap searchButton(srcLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap okButton(srcLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap cancelButton(srcLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
@@ -143,12 +143,12 @@ EkleKitap::EkleKitap(const wxString& title,const wxString& isbn)
 	vbox->Add(new wxStaticLine(subpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxLI_HORIZONTAL),0,wxEXPAND);
 	
 	wxImage::AddHandler(new wxJPEGHandler);
-	wxBitmap genericCover_1(appLocation+wxT("resource/bookcovers/0.1.jpeg"),wxBITMAP_TYPE_JPEG);
-	wxBitmap genericCover_2(appLocation+wxT("resource/bookcovers/0.2.jpeg"),wxBITMAP_TYPE_JPEG);
-	wxBitmap genericCover_3(appLocation+wxT("resource/bookcovers/0.3.jpeg"),wxBITMAP_TYPE_JPEG);
-	wxBitmap genericCover_4(appLocation+wxT("resource/bookcovers/0.4.jpeg"),wxBITMAP_TYPE_JPEG);
-	wxBitmap genericCover_5(appLocation+wxT("resource/bookcovers/0.5.jpeg"),wxBITMAP_TYPE_JPEG);
-	wxBitmap genericCover_6(appLocation+wxT("resource/bookcovers/0.6.jpeg"),wxBITMAP_TYPE_JPEG);
+	wxBitmap genericCover_1(srcLocation+wxT("resource/bookcovers/0.1.jpeg"),wxBITMAP_TYPE_JPEG);
+	wxBitmap genericCover_2(srcLocation+wxT("resource/bookcovers/0.2.jpeg"),wxBITMAP_TYPE_JPEG);
+	wxBitmap genericCover_3(srcLocation+wxT("resource/bookcovers/0.3.jpeg"),wxBITMAP_TYPE_JPEG);
+	wxBitmap genericCover_4(srcLocation+wxT("resource/bookcovers/0.4.jpeg"),wxBITMAP_TYPE_JPEG);
+	wxBitmap genericCover_5(srcLocation+wxT("resource/bookcovers/0.5.jpeg"),wxBITMAP_TYPE_JPEG);
+	wxBitmap genericCover_6(srcLocation+wxT("resource/bookcovers/0.6.jpeg"),wxBITMAP_TYPE_JPEG);
 	
 	vbox->Add(-1,10);
 	wxPanel *mid7panel = new wxPanel(subpanel,-1,wxPoint(-1,-1),wxSize(420,100));
@@ -272,28 +272,28 @@ void EkleKitap::ISBNRetrieve(const wxString& retrievemode)
 		delete isbnretriever;
 	}
 	wxString cover1url;
-	cover1url << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".1.jpeg");
+	cover1url << appLocation << wxT("bookcovers/") << bookisbn->GetValue() << wxT(".1.jpeg");
 	if(wxFileExists(cover1url))
 	{
 		wxBitmap cover1image(cover1url,wxBITMAP_TYPE_JPEG);
 		isbnCover_1->SetBitmapLabel(cover1image);
 	}
 	wxString cover2url;
-	cover2url << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".2.jpeg");
+	cover2url << appLocation << wxT("bookcovers/") << bookisbn->GetValue() << wxT(".2.jpeg");
 	if(wxFileExists(cover2url))
 	{
 		wxBitmap cover2image(cover2url,wxBITMAP_TYPE_JPEG);
 		isbnCover_2->SetBitmapLabel(cover2image);
 	}
 	wxString cover3url;
-	cover3url << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".4.jpeg");
+	cover3url << appLocation << wxT("bookcovers/") << bookisbn->GetValue() << wxT(".4.jpeg");
 	if(wxFileExists(cover3url))
 	{
 		wxBitmap cover3image(cover3url,wxBITMAP_TYPE_JPEG);
 		isbnCover_3->SetBitmapLabel(cover3image);
 	}
 	wxString cover4url;
-	cover4url << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".5.jpeg");
+	cover4url << appLocation << wxT("bookcovers/") << bookisbn->GetValue() << wxT(".5.jpeg");
 	if(wxFileExists(cover4url))
 	{
 		wxBitmap cover4image(cover4url,wxBITMAP_TYPE_JPEG);
@@ -351,8 +351,8 @@ void EkleKitap::SaveBook()
 		if(bookcover->GetValue() > 2) selectedbookcover << bookcover->GetValue()+1;
 		wxString oldcoverpath;
 		wxString newcoverpath;
-		oldcoverpath << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".") << selectedbookcover << wxT(".jpeg");
-		newcoverpath << appLocation << wxT("resource/bookcovers/") << bookisbn->GetValue() << wxT(".jpeg");
+		oldcoverpath << appLocation << wxT("bookcovers/") << bookisbn->GetValue() << wxT(".") << selectedbookcover << wxT(".jpeg");
+		newcoverpath << appLocation << wxT("bookcovers/") << bookisbn->GetValue() << wxT(".jpeg");
 		wxCopyFile(oldcoverpath,newcoverpath);
 		wxString resizecommand;
 		resizecommand << wxT("convert '") << newcoverpath << wxT("' -resize 40x60 '") << newcoverpath << wxT("'");

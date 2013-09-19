@@ -22,13 +22,13 @@ GosterListe::GosterListe(const wxString& title,wxString id)
 {
 	listid = &id;
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap dialogLogo(appLocation+wxT("resource/toolbar/list2.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap upButton(appLocation+wxT("resource/toolbar/arrow_up.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap downButton(appLocation+wxT("resource/toolbar/arrow_down.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap sortButton(appLocation+wxT("resource/toolbar/arrow_bidirectional.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap removeButton(appLocation+wxT("resource/toolbar/cancel.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap okButton(appLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap cancelButton(appLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap dialogLogo(srcLocation+wxT("resource/toolbar/list2.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap upButton(srcLocation+wxT("resource/toolbar/arrow_up.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap downButton(srcLocation+wxT("resource/toolbar/arrow_down.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap sortButton(srcLocation+wxT("resource/toolbar/arrow_bidirectional.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap removeButton(srcLocation+wxT("resource/toolbar/cancel.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap okButton(srcLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap cancelButton(srcLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
 	
 	wxPanel *panel = new wxPanel(this,-1);
 	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);

@@ -1,9 +1,12 @@
-Programı derlemek için aşağıdaki paketleri kurduktan sonra 
-make komutunu kullanmanız yeterlidir.
+Programı kaynak kodlarından derlemek için aşağıdaki paketleri 
+kurduktan sonra "make" komutunu kullanmanız yeterlidir, 
+ardından "sudo make install" komutu ile programı bilgisayarınıza 
+kalıcı olarak kurabilirsiniz.
 
 g++
 libwxbase2.8-dev
 libwxsqlite3-2.8-dev
+sqlite3
 python-mechanize
 python-tidylib
 python-pdfminer
@@ -17,8 +20,18 @@ xdg-open
 imagemagick
 bibutils
 
-Derleme tamamlandıktan sonra ./KaynakcaYonetimi 
-çalıştırılabilir dosyası ile programı açabilirsiniz.
 
-Ayrıca diğer platformlar için hazırlanan bazı Makefile 
-dosyaları da build klasöründe bulunabilir.
+Ayrıca hazırladığımız deb paketlerini de aşağıdaki komutları
+kullanarak sisteminize kurabilirsiniz. Deb paketleri Pardus, 
+Debian ve Ubuntu işletim sistemlerinde test edilmiştir.
+
+sudo apt-get update
+sudo dpkg -i kaynakcayonetimi kaynakcayonetimi_0.0.1-1_i386.deb
+sudo apt-get -f install
+
+Programı Mac OS X işletim sisteminde kullanmak için 
+MacExtras.tar.gz sıkıştırılmış dosyasını açarak içinden
+çıkan KaynakcaYonetimi.App uygulama dosyasını çalıştırabilirsiniz.
+
+Daha fazla bilgi için http://www.canbula.com/KaynakcaYonetimi 
+adresini ziyaret edebilirsiniz.

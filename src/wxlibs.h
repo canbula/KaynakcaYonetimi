@@ -77,12 +77,14 @@
 const wxStandardPaths stdPath;
 
 #ifdef __APPLE__
+const wxString srcLocation = wxT("");
 const wxString appLocation = wxT("");
 const wxString platform = wxT("apple");
 #endif
 
 #ifdef __LINUX__
-const wxString appLocation = wxFileName(stdPath.GetExecutablePath()).GetPath()+wxT("/");
+const wxString srcLocation = wxFileName(stdPath.GetExecutablePath()).GetPath()+wxT("/");
+const wxString appLocation = wxGetHomeDir()+wxT("/.kaynakcayonetimi/");
 const wxString platform = wxT("linux");
 #endif
 

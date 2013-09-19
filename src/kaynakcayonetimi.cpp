@@ -30,29 +30,53 @@
 KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	: wxFrame(NULL,wxID_ANY,title,wxDefaultPosition,wxSize(960,700))//,wxDEFAULT_FRAME_STYLE & ~ (wxRESIZE_BORDER|wxMAXIMIZE_BOX))
 {
+
+	if(!wxFileExists(appLocation+wxT("db/Kaynakca.db")))
+	{
+		wxString dbcreatorscript = wxT("sh -c \"sqlite3 ")+appLocation+wxT("db/Kaynakca.db < ")+srcLocation+wxT("src/Kaynakca.sql\"");
+		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/db"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/files"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/bookcovers"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/buldoi.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoi.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/buldoipdf.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoipdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/bulisbnpdf.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbnpdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/eklekitap.php ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklekitap.php"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/eklemakale.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklemakale.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/bulisbn.php ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbn.php"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoi.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoipdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbnpdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklemakale.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklekitap.php"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbn.php"),wxEXEC_SYNC);
+		wxExecute(dbcreatorscript,wxEXEC_SYNC);
+	}
+
 	wxSize mainSize = this->GetSize();
 
 	wxImage::AddHandler(new wxPNGHandler);
-	wxBitmap toolbarLibrary(appLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarBook(appLocation+wxT("resource/toolbar/book.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarArticle(appLocation+wxT("resource/toolbar/contract2.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarDocument(appLocation+wxT("resource/toolbar/document1.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarFile(appLocation+wxT("resource/toolbar/file.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarList(appLocation+wxT("resource/toolbar/list2.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarISBN(appLocation+wxT("resource/toolbar/barcode.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarDOI(appLocation+wxT("resource/toolbar/serial-number.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarSearch(appLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarAbout(appLocation+wxT("resource/toolbar/info.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarHelp(appLocation+wxT("resource/toolbar/help.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarQuit(appLocation+wxT("resource/toolbar/gateway.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap toolbarAdobe(appLocation+wxT("resource/toolbar/adobe.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap iconBook(appLocation+wxT("resource/icons/book.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap iconArticle(appLocation+wxT("resource/icons/contract2.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap iconDocument(appLocation+wxT("resource/icons/document1.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap iconFile(appLocation+wxT("resource/icons/file.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap searchButton(appLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap okButton(appLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
-	wxBitmap cancelButton(appLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarLibrary(srcLocation+wxT("resource/toolbar/add.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarBook(srcLocation+wxT("resource/toolbar/book.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarArticle(srcLocation+wxT("resource/toolbar/contract2.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarDocument(srcLocation+wxT("resource/toolbar/document1.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarFile(srcLocation+wxT("resource/toolbar/file.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarList(srcLocation+wxT("resource/toolbar/list2.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarISBN(srcLocation+wxT("resource/toolbar/barcode.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarDOI(srcLocation+wxT("resource/toolbar/serial-number.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarSearch(srcLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarAbout(srcLocation+wxT("resource/toolbar/info.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarHelp(srcLocation+wxT("resource/toolbar/help.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarQuit(srcLocation+wxT("resource/toolbar/gateway.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap toolbarAdobe(srcLocation+wxT("resource/toolbar/adobe.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap iconBook(srcLocation+wxT("resource/icons/book.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap iconArticle(srcLocation+wxT("resource/icons/contract2.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap iconDocument(srcLocation+wxT("resource/icons/document1.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap iconFile(srcLocation+wxT("resource/icons/file.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap searchButton(srcLocation+wxT("resource/toolbar/zoom.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap okButton(srcLocation+wxT("resource/toolbar/checkmark.png"),wxBITMAP_TYPE_PNG);
+	wxBitmap cancelButton(srcLocation+wxT("resource/toolbar/cross.png"),wxBITMAP_TYPE_PNG);
 	
 	
 	wxMenuBar *menubar = new wxMenuBar;
@@ -109,7 +133,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 
 	wxToolBar *lasttoolbar = new wxToolBar(toolbarpanel,-1,wxPoint(-1,-1),wxSize(-1,-1),wxTB_TEXT);
 	lasttoolbar->AddSeparator();
-	lasttoolbar->AddTool(ID_TOOLBAR_HELP,wxT("Yardım"),toolbarHelp);
+	lasttoolbar->AddTool(wxID_HELP,wxT("Yardım"),toolbarHelp);
 	lasttoolbar->AddTool(wxID_ABOUT,wxT("Hakkında"),toolbarAbout);
 	lasttoolbar->AddTool(wxID_EXIT,wxT("Çıkış"),toolbarQuit);
 	lasttoolbar->Realize();
@@ -438,6 +462,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_TOOLBAR_FINDISBN,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::BulISBNDialog));
 	Connect(ID_TOOLBAR_FINDDOI,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::BulDOIDialog));
 	Connect(ID_TOOLBAR_SEARCH,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::AramaKutusuDialog));
+	Connect(wxID_HELP,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::Yardim));
 	Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::Hakkinda));
 	Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(KaynakcaYonetimi::Kapat));
 	Connect(booklist->GetId(),wxEVT_COMMAND_LIST_COL_CLICK,wxListEventHandler(KaynakcaYonetimi::KitapSirala));
@@ -467,7 +492,7 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 	Connect(ID_BUTTON_REFRESHDOCUMENTS,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::DokumanlariYukleTetikle));
 	Connect(ID_BUTTON_REFRESHFILES,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(KaynakcaYonetimi::DosyalariYukleTetikle));
 	
-	SetIcon(wxIcon(appLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
+	SetIcon(wxIcon(srcLocation+wxT("resource/icons/kaynakcayonetimi.xpm")));
 	Centre();
 
 	int frameSize = mainSize.GetWidth();
@@ -488,6 +513,10 @@ void KaynakcaYonetimi::Hakkinda(wxCommandEvent& WXUNUSED(event))
 	info.SetDescription(wxT("Kaynakça öğelerini barındıran bir veritabanını yönetecek ve tez veya makalelerde kullanılmak üzere seçilen öğeleri barındıran kaynakça listelerini istenilen biçimde otomatik oluşturan bir program."));
 	info.SetCopyright(wxT("Pardus Yazılım Kampı 2013 (C) Bora CANBULA <bora.canbula@cbu.edu.tr>"));
 	wxAboutBox(info);
+}
+void KaynakcaYonetimi::Yardim(wxCommandEvent& WXUNUSED(event))
+{
+	wxExecute(wxT("xdg-open http://www.canbula.com/KaynakcaYonetimi"));
 }
 void KaynakcaYonetimi::Kapat(wxCommandEvent& WXUNUSED(event)) {Close(true);}
 /////////////////////////////////////////////////
@@ -565,17 +594,17 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 	booklistcevap = Vt(booklistsql);
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImageList *bookimagelist = new wxImageList();
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_0_star.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_1_star.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_2_star.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_3_star.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_4_star.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_5_star.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_0_file.png"),wxBITMAP_TYPE_PNG));
-	bookimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/book_1_file.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_0_star.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_1_star.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_2_star.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_3_star.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_4_star.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_5_star.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_0_file.png"),wxBITMAP_TYPE_PNG));
+	bookimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/book_1_file.png"),wxBITMAP_TYPE_PNG));
 	wxImage::AddHandler(new wxJPEGHandler);
 	for(int i=0;i<booklistcevap.satir;i++)
-		bookimagelist->Add(wxBitmap(appLocation+wxT("resource/bookcovers/")+booklistcevap.sonuc.Item(i*booklistcevap.sutun+0)+wxT(".jpeg"),wxBITMAP_TYPE_JPEG));
+		bookimagelist->Add(wxBitmap(appLocation+wxT("bookcovers/")+booklistcevap.sonuc.Item(i*booklistcevap.sutun+0)+wxT(".jpeg"),wxBITMAP_TYPE_JPEG));
 	booklist->SetImageList(bookimagelist,wxIMAGE_LIST_SMALL);
 	for(int i=0;i<booklistcevap.satir;i++)
 	{
@@ -594,26 +623,6 @@ void KaynakcaYonetimi::KitaplariYukle(const wxString& sorter,const wxString& que
 		booklist->SetItem(0,0,booklistcevap.sonuc.Item(i*booklistcevap.sutun+0));
 		booklist->SetItem(0,1,wxT(""));
 		booklist->SetItemColumnImage(item,1,wxAtoi(booklistcevap.sonuc.Item(i*booklistcevap.sutun+6)));
-		/*
-		wxString dosyakontrolcommand;
-		dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".*");
-		wxArrayString output;
-		wxArrayString errors;
-		wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
-		if(output.GetCount() > 0)
-		{
-			if(wxFileExists(output.Item(0)))
-			{
-				booklist->SetItem(0,2,wxT(""));
-				booklist->SetItemColumnImage(item,2,7);
-			}
-			else
-			{
-				booklist->SetItem(0,2,wxT(""));
-				booklist->SetItemColumnImage(item,2,6);
-			}
-		}
-		*/
 		wxString dosyakontrolcommand1;
 		dosyakontrolcommand1 << appLocation << wxT("files/") << booklistcevap.sonuc.Item(i*booklistcevap.sutun+0) << wxT(".pdf");
 		wxString dosyakontrolcommand2;
@@ -1034,14 +1043,14 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 	paperlistcevap = Vt(paperlistsql);
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImageList *paperimagelist = new wxImageList();
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/0_star.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/1_star.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/2_star.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/3_star.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/4_star.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/5_star.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/0_file.png"),wxBITMAP_TYPE_PNG));
-	paperimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/1_file.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/0_star.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/1_star.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/2_star.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/3_star.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/4_star.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/5_star.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/0_file.png"),wxBITMAP_TYPE_PNG));
+	paperimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/1_file.png"),wxBITMAP_TYPE_PNG));
 	paperlist->SetImageList(paperimagelist,wxIMAGE_LIST_SMALL);
 	for(int i=0;i<paperlistcevap.satir;i++)
 	{
@@ -1061,26 +1070,6 @@ void KaynakcaYonetimi::MakaleleriYukle(const wxString& sorter,const wxString& qu
 		paperlist->SetItemColumnImage(item,1,wxAtoi(paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+12)));
 		wxString makaledosyadoi = paperlistcevap.sonuc.Item(i*paperlistcevap.sutun+0);
 		makaledosyadoi.Replace(wxT("/"),wxT("|"));
-		// Bu kontrol programı yavaşlattiği için kapatıldı
-		//wxString dosyakontrolcommand;
-		//dosyakontrolcommand << wxT("find ") << appLocation << wxT("files/ -name ") << makaledosyadoi << wxT(".*");
-		//wxArrayString output;
-		//wxArrayString errors;
-		//wxExecute(dosyakontrolcommand,output,errors,wxEXEC_SYNC);
-		//if(output.GetCount() > 0)
-		//{
-		//	if(wxFileExists(output.Item(0)))
-		//	{
-		//		paperlist->SetItem(0,2,wxT(""));
-		//		paperlist->SetItemColumnImage(item,2,7);
-		//	}
-		//	else
-		//	{
-		//		paperlist->SetItem(0,2,wxT(""));
-		//		paperlist->SetItemColumnImage(item,2,6);
-		//	}
-		//}
-		// Bu kontrol daha hızli
 		wxString dosyakontrolcommand;
 		dosyakontrolcommand << appLocation << wxT("files/") << makaledosyadoi << wxT(".pdf");
 		if(wxFileExists(dosyakontrolcommand))
@@ -1498,14 +1487,14 @@ void KaynakcaYonetimi::DokumanlariYukle(const wxString& sorter,const wxString& q
 	documentlistcevap = Vt(documentlistsql);
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImageList *documentimagelist = new wxImageList();
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/0_star.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/1_star.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/2_star.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/3_star.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/4_star.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/5_star.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/0_file.png"),wxBITMAP_TYPE_PNG));
-	documentimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/1_file.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/0_star.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/1_star.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/2_star.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/3_star.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/4_star.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/5_star.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/0_file.png"),wxBITMAP_TYPE_PNG));
+	documentimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/1_file.png"),wxBITMAP_TYPE_PNG));
 	documentlist->SetImageList(documentimagelist,wxIMAGE_LIST_SMALL);
 	for(int i=0;i<documentlistcevap.satir;i++)
 	{
@@ -1786,14 +1775,14 @@ void KaynakcaYonetimi::DosyalariYukle(const wxString& sorter,const wxString& que
 	filelistcevap = Vt(filelistsql);
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImageList *fileimagelist = new wxImageList();
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/0_star.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/1_star.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/2_star.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/3_star.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/4_star.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/5_star.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/0_file.png"),wxBITMAP_TYPE_PNG));
-	fileimagelist->Add(wxBitmap(appLocation+wxT("resource/toolbar/1_file.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/0_star.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/1_star.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/2_star.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/3_star.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/4_star.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/5_star.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/0_file.png"),wxBITMAP_TYPE_PNG));
+	fileimagelist->Add(wxBitmap(srcLocation+wxT("resource/toolbar/1_file.png"),wxBITMAP_TYPE_PNG));
 	filelist->SetImageList(fileimagelist,wxIMAGE_LIST_SMALL);
 	for(int i=0;i<filelistcevap.satir;i++)
 	{

@@ -71,10 +71,11 @@ if($mode=="full") {
 		$book["cover"][6] = $googleresult2['responseData']['results'][2]['tbUrl'];
 
 		for($i=1;$i<=6;$i++) {
-			file_put_contents("resource/bookcovers/".$book["isbn"].".".$i.".jpeg",file_get_contents($book["cover"][$i]));
+			file_put_contents(dirname(__FILE__)."/../bookcovers/".$book["isbn"].".".$i.".jpeg",file_get_contents($book["cover"][$i]));
 		}
 
-		$db = new SQLite3('db/Kaynakca.db');
+		$dbpath = dirname(__FILE__)."/../db/Kaynakca.db";
+		$db = new SQLite3($dbpath);
 		$stmt = $db->prepare('INSERT OR REPLACE INTO book_retrieve VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
 		$stmt->bindValue(1,$book["isbn"],SQLITE3_TEXT);
 		$stmt->bindValue(2,$book["title"],SQLITE3_TEXT);
@@ -104,7 +105,7 @@ if($mode=="cover") {
 	$cover[5] = $googleresult2['responseData']['results'][1]['tbUrl'];
 	$cover[6] = $googleresult2['responseData']['results'][2]['tbUrl'];
 	for($i=1;$i<=6;$i++) {
-		file_put_contents("resource/bookcovers/".$isbn.".".$i.".jpeg",file_get_contents($cover[$i]));
+		file_put_contents(dirname(__FILE__)."/../bookcovers/".$isbn.".".$i.".jpeg",file_get_contents($cover[$i]));
 	}
 }
 ?>

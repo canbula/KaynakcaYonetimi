@@ -69,6 +69,7 @@ public:
 	// Genel
 	void Kapat(wxCommandEvent& event);
 	void Hakkinda(wxCommandEvent& event);
+	void Yardim(wxCommandEvent& event);
 	wxNotebook* middlenb;
 	
 	// Kitap

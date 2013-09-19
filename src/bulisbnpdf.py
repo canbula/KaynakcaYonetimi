@@ -21,6 +21,7 @@ import sys
 from pyPdf import PdfFileWriter, PdfFileReader
 import subprocess
 import re
+import os
 
 def PDFtara(srcfile):
 	if srcfile.lower()[-3:] == "pdf":
