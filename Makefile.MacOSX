@@ -1,7 +1,5 @@
 all: KaynakcaYonetimi.app
 KaynakcaYonetimi.app: KaynakcaYonetimi
-	mkdir db
-	mkdir files
 	mkdir KaynakcaYonetimi.app
 	mkdir KaynakcaYonetimi.app/Contents
 	mkdir KaynakcaYonetimi.app/Contents/MacOS
@@ -17,6 +15,4 @@ install:
 uninstall:
 	rm -rf /Applications/KaynakcaYonetimi.app
 clean:
-	rm -rf db
-	rm -rf files
 	rm -rf KaynakcaYonetimi.app

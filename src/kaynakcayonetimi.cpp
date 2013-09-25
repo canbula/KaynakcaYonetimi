@@ -33,24 +33,39 @@ KaynakcaYonetimi::KaynakcaYonetimi(const wxString& title)
 
 	if(!wxFileExists(appLocation+wxT("db/Kaynakca.db")))
 	{
+		wxString appSettingsFile = wxGetHomeDir()+wxT("/.ky");
+		wxTextFile appSettings(appSettingsFile);
+		if(!appSettings.Exists() or (appLocation == wxT("") and platform == wxT("linux")))
+		{
+			appSettings.Create();
+			wxDirDialog appFolderSelector(this,wxT("Dosyaların depolanacağı klasörü seçin!"),wxGetHomeDir());
+			if(appFolderSelector.ShowModal() == wxID_OK)
+			{
+				appSettings.AddLine(appFolderSelector.GetPath()+wxT("/"));
+			}
+			appSettings.Write();
+			appSettings.Close();
+			wxExecute(wxT("sh -c \"sleep 5 && kaynakcayonetimi\""));
+			Close(true);
+		}
 		wxString dbcreatorscript = wxT("sh -c \"sqlite3 ")+appLocation+wxT("db/Kaynakca.db < ")+srcLocation+wxT("src/Kaynakca.sql\"");
-		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi"),wxEXEC_SYNC);
-		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/db"),wxEXEC_SYNC);
-		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/files"),wxEXEC_SYNC);
-		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/bookcovers"),wxEXEC_SYNC);
-		wxExecute(wxT("mkdir ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src"),wxEXEC_SYNC);
-		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/buldoi.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoi.py"),wxEXEC_SYNC);
-		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/buldoipdf.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoipdf.py"),wxEXEC_SYNC);
-		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/bulisbnpdf.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbnpdf.py"),wxEXEC_SYNC);
-		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/eklekitap.php ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklekitap.php"),wxEXEC_SYNC);
-		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/eklemakale.py ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklemakale.py"),wxEXEC_SYNC);
-		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/bulisbn.php ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbn.php"),wxEXEC_SYNC);
-		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoi.py"),wxEXEC_SYNC);
-		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/buldoipdf.py"),wxEXEC_SYNC);
-		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbnpdf.py"),wxEXEC_SYNC);
-		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklemakale.py"),wxEXEC_SYNC);
-		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/eklekitap.php"),wxEXEC_SYNC);
-		wxExecute(wxT("chmod +x ")+wxGetHomeDir()+wxT("/.kaynakcayonetimi/src/bulisbn.php"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+appLocation,wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+appLocation+wxT("db"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+appLocation+wxT("files"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+appLocation+wxT("bookcovers"),wxEXEC_SYNC);
+		wxExecute(wxT("mkdir ")+appLocation+wxT("src"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/buldoi.py ")+appLocation+wxT("src/buldoi.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/buldoipdf.py ")+appLocation+wxT("src/buldoipdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/bulisbnpdf.py ")+appLocation+wxT("src/bulisbnpdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/eklekitap.php ")+appLocation+wxT("src/eklekitap.php"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/eklemakale.py ")+appLocation+wxT("src/eklemakale.py"),wxEXEC_SYNC);
+		wxExecute(wxT("cp -f ")+srcLocation+wxT("src/bulisbn.php ")+appLocation+wxT("src/bulisbn.php"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+appLocation+wxT("src/buldoi.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+appLocation+wxT("src/buldoipdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+appLocation+wxT("src/bulisbnpdf.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+appLocation+wxT("src/eklemakale.py"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+appLocation+wxT("src/eklekitap.php"),wxEXEC_SYNC);
+		wxExecute(wxT("chmod +x ")+appLocation+wxT("src/bulisbn.php"),wxEXEC_SYNC);
 		wxExecute(dbcreatorscript,wxEXEC_SYNC);
 	}
 
@@ -509,7 +524,7 @@ void KaynakcaYonetimi::Hakkinda(wxCommandEvent& WXUNUSED(event))
 {
 	wxAboutDialogInfo info;
 	info.SetName(wxT("Kaynakça Yönetimi"));
-	info.SetVersion(wxT("0.0.1"));
+	info.SetVersion(wxT("0.0.2"));
 	info.SetDescription(wxT("Kaynakça öğelerini barındıran bir veritabanını yönetecek ve tez veya makalelerde kullanılmak üzere seçilen öğeleri barındıran kaynakça listelerini istenilen biçimde otomatik oluşturan bir program."));
 	info.SetCopyright(wxT("Pardus Yazılım Kampı 2013 (C) Bora CANBULA <bora.canbula@cbu.edu.tr>"));
 	wxAboutBox(info);
@@ -1632,6 +1647,7 @@ void KaynakcaYonetimi::DokumanSagTik(wxListEvent &event)
 	dokumansagtiksubmenu2->AppendCheckItem(7194,wxT("4"));
 	dokumansagtiksubmenu2->AppendCheckItem(7195,wxT("5"));
 	dokumansagtiksubmenu2->Check(dokumansagtikstarid,TRUE);
+	Connect(7190, 7195, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::DokumanSagTikTik, NULL, this);
 	dokumansagtikmenu.Append(-1,wxT("Beğeni"), dokumansagtiksubmenu2);
 	dokumansagtikmenu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::DokumanSagTikTik, NULL, this);
 	PopupMenu(&dokumansagtikmenu);
@@ -1920,6 +1936,7 @@ void KaynakcaYonetimi::DosyaSagTik(wxListEvent &event)
 	dosyasagtiksubmenu2->AppendCheckItem(7194,wxT("4"));
 	dosyasagtiksubmenu2->AppendCheckItem(7195,wxT("5"));
 	dosyasagtiksubmenu2->Check(dosyasagtikstarid,TRUE);
+	Connect(7190, 7195, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::DosyaSagTikTik, NULL, this);
 	dosyasagtikmenu.Append(-1,wxT("Beğeni"), dosyasagtiksubmenu2);
 	dosyasagtikmenu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&KaynakcaYonetimi::DosyaSagTikTik, NULL, this);
 	PopupMenu(&dosyasagtikmenu);

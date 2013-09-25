@@ -74,17 +74,33 @@
 #include <wx/wxhtml.h>
 #include <wx/wxsqlite3.h>
 
+inline wxString appLocationFromFile()
+{
+	wxString appSettingsFile = wxGetHomeDir()+wxT("/.ky");
+	wxTextFile appSettings(appSettingsFile);
+	if(appSettings.Exists())
+	{
+		appSettings.Open();
+		return appSettings.GetLine(0);
+		appSettings.Close();
+	}
+	else
+	{
+		return wxT("");
+	}
+}
+
 const wxStandardPaths stdPath;
 
 #ifdef __APPLE__
 const wxString srcLocation = wxT("");
-const wxString appLocation = wxT("");
+const wxString appLocation = appLocationFromFile();
 const wxString platform = wxT("apple");
 #endif
 
 #ifdef __LINUX__
 const wxString srcLocation = wxFileName(stdPath.GetExecutablePath()).GetPath()+wxT("/");
-const wxString appLocation = wxGetHomeDir()+wxT("/.kaynakcayonetimi/");
+const wxString appLocation = appLocationFromFile();
 const wxString platform = wxT("linux");
 #endif
 
